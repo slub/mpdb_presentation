@@ -1,0 +1,13 @@
+services:
+  Slub\MpdbPresentation\Command\CalculateTablesCommand:
+    tags:
+      - name: 'console.command'
+        command: 'mpdb_presentation:calculatetables'
+        description: 'create data tables in search engine for frontend presentation'
+        hidden: false
+  Slub\MpdbPresentation\Command\IndexPublishersCommand:
+    tags:
+      - name: 'console.command'
+        command: 'mpdb_presentation:indexpublishers'
+        description: 'index publishers for frontend use'
+        hidden: false

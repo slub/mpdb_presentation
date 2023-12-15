@@ -1,0 +1,38 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+{namespace mpdbpres=Slub\MpdbPresentation\ViewHelpers}
+
+<f:layout name="Research" />
+
+<f:section name="wrap">
+    <f:render partial="Index/IndexPicker" arguments="{config:config,indices:indices}" />
+    <f:render partial="Index/PublisherPicker" arguments="{config:config,publishers:publishers}" />
+    <f:render partial="Index/Pagination" arguments="{config:config,totalItems:totalItems,resultCount:resultCount}" />
+</f:section>
+
+<f:section name="sidebar">
+    -- sidebar --
+</f:section>
+
+<f:section name="content">
+
+    <f:link.action action="list" arguments="{publisher:null,sortString:'',desc:'',searchTerm:searchTerm}" id="link-to-current-page" />
+
+    <f:if condition="{entities}">
+        <f:then>
+            <div class="entity-list">
+                <f:for each="{entities}" as="entity">
+                    <div class="entity-list-item">
+                        <f:render partial="{indices.{entity._index}.controller}/ListView" arguments="{entity=entity,indices=indices}" />
+                    </div>
+                </f:for>
+            </div>
+        </f:then>
+        <f:else>
+            <div class="no-results">
+                Keine Suchergebnisse gefunden
+            </div>
+        </f:else>
+    </f:if>
+
+</f:section>

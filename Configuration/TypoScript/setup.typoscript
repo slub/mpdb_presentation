@@ -1,0 +1,72 @@
+plugin.tx_mpdbpresentation_mpdbapi {
+    view {
+        templateRootPaths.0 = EXT:mpdb_presentation/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbapi.view.templateRootPath}
+        partialRootPaths.0 = EXT:mpdb_presentation/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbapi.view.partialRootPath}
+        layoutRootPaths.0 = EXT:mpdb_presentation/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbapi.view.layoutRootPath}
+    }
+    persistence {
+        storagePid = {$plugin.tx_mpdbpresentation_mpdbapi.persistence.storagePid}
+        #recursive = 1
+    }
+    features {
+        #skipDefaultArguments = 1
+        # if set to 1, the enable fields are ignored in BE context
+        ignoreAllEnableFieldsInBe = 0
+        # Should be on by default, but can be disabled if all action in the plugin are uncached
+        requireCHashArgumentForActionArguments = 1
+    }
+    mvc {
+        #callDefaultActionIfActionCantBeResolved = 1
+    }
+}
+
+plugin.tx_mpdbpresentation_mpdbresearch {
+    view {
+        templateRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.templateRootPath}
+        partialRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.partialRootPath}
+        layoutRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.layoutRootPath}
+    }
+    persistence {
+        storagePid = {$plugin.tx_mpdbpresentation_mpdbresearch.persistence.storagePid}
+        #recursive = 1
+    }
+    features {
+        #skipDefaultArguments = 1
+        # if set to 1, the enable fields are ignored in BE context
+        ignoreAllEnableFieldsInBe = 0
+        # Should be on by default, but can be disabled if all action in the plugin are uncached
+        requireCHashArgumentForActionArguments = 1
+    }
+    mvc {
+        #callDefaultActionIfActionCantBeResolved = 1
+    }
+    settings {
+        researchPage {
+            pid = {$config.researchPage.pid}
+        }
+        teamPage {
+            pid = {$config.teamPage.pid}
+        }
+    }
+}
+
+page {
+    includeJSFooterlibs {
+        d3 = EXT:guv_sitepackage/Resources/Public/JavaScript/Dist/d3.min.js
+    }
+    includeJSFooter {
+		research = EXT:guv_sitepackage/Resources/Public/JavaScript/Dist/research.js
+		lastVisited = EXT:mpdb_presentation/Resources/Public/JavaScript/LastVisitedFe.js
+		visualizationController = EXT:mpdb_presentation/Resources/Public/JavaScript/VisualizationController.js
+		tableController = EXT:mpdb_presentation/Resources/Public/JavaScript/TableController.js
+		graphController = EXT:mpdb_presentation/Resources/Public/JavaScript/GraphController.js
+		dashboardController = EXT:mpdb_presentation/Resources/Public/JavaScript/DashboardController.js
+		visualizationStatus = EXT:mpdb_presentation/Resources/Public/JavaScript/VisualizationStatus.js
+    }
+}

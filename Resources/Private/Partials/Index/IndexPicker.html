@@ -1,0 +1,19 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:0)}</f:variable>
+    <ul class="publisher-picker">
+        <f:for each="{indices}" as="index" key="key">
+            <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:key)}</f:variable>
+            <li>
+                <f:link.action action="search" arguments="{config:searchconfig}">
+                    {index.translation}
+                </f:link.action>
+            </li>
+        </f:for>
+        <li>
+            <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:'')}</f:variable>
+            <f:link.action action="search" arguments="{config:searchconfig}">
+                🗙
+            </f:link.action>
+        </li>
+    </ul>
+</html>

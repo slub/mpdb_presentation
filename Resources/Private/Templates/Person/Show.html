@@ -1,0 +1,164 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Research" />
+
+This Template is responsible for displaying a single view for a domain object
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+    <p class="data-type">
+        Personendatensatz
+    </p>
+    <h1 class="current-item">{person.name}</h1>
+    <f:link.action action="show" arguments="{person:person.uid}" id="link-to-current-page" />
+
+    <div class="person-authority-info">
+        <p class="authority-set">
+            Personendaten nach gemeinsamer Normdatei der DNB
+            <f:if condition="{person.gnd_id}!='lokal'">
+                <f:then>
+                    <f:link.external target="_blank"
+                    uri="https://d-nb.info/{person.gnd_id}">
+                        GND-ID {person.gnd_id}
+                    </f:link.external>
+                </f:then>
+                <f:else>
+                    <small>
+                        lokaler Personendatensatz
+                    </small>
+                </f:else>
+            </f:if>
+        </p>
+        <table>
+            <tr>
+                <td>
+                    Lebensdaten
+                </td>
+                <td>
+                    <f:if condition="{person.date_of_birth}&{person.date_of_death}">
+                        <f:then>
+                            <span id="date-of-birth">
+                                {person.date_of_birth->f:format.date(format:'d.m.Y')}
+                            </span>
+                            <f:if condition="{person.placeOfBirth}">
+                                ({person.place_of_birth})
+                            </f:if>
+                            &ndash;
+                            <span id="date-of-death">
+                                {person.date_of_death->f:format.date(format:'d.m.Y')}
+                            </span>
+                            <f:if condition="{person.place_of_death}">
+                                ({person.place_of_death})
+                            </f:if>
+                        </f:then>
+                        <f:else>
+                            <em> Lebensdaten unbekannt </em>
+                        </f:else>
+                    </f:if>
+                </td>
+                <f:if condition="{person.place_of_activitiy}">
+                    <tr>
+                        <td>
+                            Wirkungsort
+                        </td>
+                        <td>
+                            {person.place_of_activitiy}
+                        </td>
+                    </tr>
+                </f:if>
+                <f:if condition="{person.geographic_area_code}">
+                    <tr>
+                        <td>
+                            Geografischer Code
+                        </td>
+                        <td>
+                            {person.geographic_area_code}
+                        </td>
+                    </tr>
+                </f:if>
+                <f:if condition="{person.gender}">
+                    <tr>
+                        <td>
+                            Geschlecht
+                        </td>
+                        <td>
+                            {person.gender}
+                        </td>
+                    </tr>
+                </f:if>
+            </tr>
+        </table>
+        <!--
+        <p class="info">
+            Die mvdb hat keinen Einfluss auf die aus der GND entnommenen Informationen.
+        </p>
+        -->
+    </div>
+    <div id="graphics">
+        <h3> Wirtschaftsdaten <small> Klicken zum Ausblenden </small> </h3>
+        <div id="help-text">
+            <h3> Hilfe zur Grafik <small> Klicken zum Anzeigen </small> </h3>
+            <div>
+                <p>
+                    Die Grafik zeigt die Lebensdaten der angezeigten Person im hellen Rechteck innerhalb der Zeitleiste.
+                    Darüber trägt der Polygonzug die jahresdurchschnittliche Auflage (im gleitenden Mittelwert über fünf Jahre) ab.
+                </p>
+                <p>
+                    Im Bereich darunter werden diese Auflagezahlen nach Einzelwerken aufgeschlüsselt.
+                    Jedes Einzelwerk hat analog zur summierenden Grafik oben einen eigenen Polygonzug.
+                    Diese sind in ihrer Höhe gemeinsam skaliert, sodass die Flächen der einzelnen Polygonzüge miteinander vergleichbar sind.
+                    Unter jedem Polygonzug stellt ein Punkt eine einzelne Auflage dar.
+                    Dessen Farbe richtet sich nach dem auflegenden Verlag.
+                    Wenn Sie die Maus über einen Punkt bewegen, können Sie Datum, Auflagenhöhe und Verlag ablesen.
+                </p>
+            </div>
+        </div>
+        <div id="{graphTarget}"></div>
+    </div>
+
+    <f:format.htmlentitiesDecode>{personGraph}</f:format.htmlentitiesDecode>
+    <script>
+        /*
+        document.addEventlistener('DOMContentLoaded', _ =>
+            const graph = new ViewGraph({
+                "data": {person},
+                "target": "person-graph",
+                "split": "works",
+                "path": "work.published_subitem.action"
+            })
+        );
+        */
+    </script>
+
+    <h3> Werke von {person.name} in der mvdb </h3>
+    <f:if condition="{person.works}">
+        <f:then>
+            <ul>
+                <f:for each="{person.works}" as="work">
+                    <li>
+                        <f:link.action action="show" arguments="{work:work.uid}" controller="Work">
+							{work.full_title}<f:if condition="{work.opus_no}">, op. {work.opus_no}</f:if>
+                        </f:link.action>
+                        <small>
+                            verlegt bei {work.publishers}
+                        </small>
+                    </li>
+                </f:for >
+            </ul>
+        </f:then>
+        <f:else>
+            <em> Es sind keine Werke von {person.name} in einem Verlagsartikel in der mvdb gedruckt worden. </em>
+        </f:else>
+    </f:if>
+
+</f:section>
+<f:section name="wrap"/>
+<f:section name="sidebar"/>
+</html>

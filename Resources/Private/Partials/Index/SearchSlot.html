@@ -1,0 +1,18 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+{namespace mpdbpres=Slub\MpdbPresentation\ViewHelpers}
+
+    <f:form action="search" controller="Index" class="form-inline">
+        <div class="input-group">
+            <span class="input-group-label"> Suchbegriff </span>
+            <f:form.textfield name="config[searchTerm]" class="input-group-field" value="{config.searchTerm}" />
+            <div class="input-group-button">
+                <f:form.button class="button" id="search-button"> 🔎 </f:form.button>
+                <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchConfig,key:'searchTerm',value:'')}</f:variable>
+                <f:link.action action="list" arguments="{config:searchconfig}" class="hollow button" id="reset-button">
+                    🗙
+                </f:link.action>
+            </div>
+        </div>
+    </f:form>
+</html>

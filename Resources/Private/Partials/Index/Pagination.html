@@ -1,0 +1,40 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <f:variable name="firstResult">
+        <f:if condition="{config.from}">
+            <f:then>
+                {config.from}
+            </f:then>
+            <f:else>
+                0
+            </f:else>
+        </f:if>
+    </f:variable>
+    <f:variable name="lastResult">
+        {firstResult+resultCount}
+    </f:variable>
+
+    <f:if condition="{firstResult}!=0">
+        <f:variable name="from">{firstResult - resultCount}</f:variable>
+        <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:from)}</f:variable>
+        <f:link.action action="search" arguments="{config:searchconfig}">
+            letzte Seite
+        </f:link.action>
+    </f:if>
+    Ergebnisse {firstResult+1} bis
+    <f:if condition="{lastResult}<{totalItems}">
+        <f:then>
+            {lastResult}
+        </f:then>
+        <f:else>
+            {totalItems}
+        </f:else>
+    </f:if>
+    von {totalItems}
+    <f:if condition="{lastResult}<{totalItems}">
+        <f:variable name="from">{firstResult + resultCount}</f:variable>
+        <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:from)}</f:variable>
+        <f:link.action action="search" arguments="{config:searchconfig}">
+            nächste Seite
+        </f:link.action>
+    </f:if>
+</html>

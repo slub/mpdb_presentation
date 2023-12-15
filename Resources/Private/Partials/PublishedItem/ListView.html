@@ -1,0 +1,28 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <div class="list-view-published-item">
+        <span class="list-view-symbol">
+            {indices.published_item.symbol}
+        </span>
+        <span class="list-view-id">
+            {entity._id}
+        </span>
+        <f:link.action action="show" controller="PublishedItem" arguments="{publishedItem:entity._source.uid}">
+            <span class="list-view-title">
+                {entity._source.title}
+            </span>
+        </f:link.action>
+        <span class="list-view-composer">
+            {entity._source.works.0.composers.0.name}
+        </span>
+    </div>
+    <div class="list-view-published-subitems">
+        <f:for each="{entity._source.published_subitems}" as="subitem">
+            <span class="list-view-id">
+                {subitem.mvdb_id}
+            </span>
+            <span class="list-view-composer">
+                {subitem.works.0.composers.0.name}
+            </span>
+        </f:for>
+    </div>
+</html>

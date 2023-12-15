@@ -1,0 +1,302 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Default" />
+
+This Template is responsible for displaying a single view for a domain object
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+    <f:flashMessages />
+    <p class="data-type">
+        Werkdatensatz
+    </p>
+    <h1 class="current-item">
+        <span id="work-title">
+            {work.fullTitle}
+        </span>
+        <f:if condition="{work.opusNo}">
+            <small> op. {work.opusNo} </small>
+        </f:if>
+        <f:if condition="{work.indexNo}">
+            <small> {work.indexNo} </small>
+        </f:if>
+    </h1>
+    <f:link.action action="show" arguments="{work:work}" id="link-to-current-page" />
+
+    <f:if condition="{work.altTitles}">
+        <div id="alt-titles">
+            <h2> Alternativtitel <small> klicken zum Anzeigen </small> </h2>
+            <p id="alt-titles-raw"> {work.altTitles} </p>
+        </div>
+    </f:if>
+
+    <div class="work-authority-info">
+        <p class="authority-set">
+            Werkdaten nach gemeinsamer Normdatei der DNB
+            <f:if condition="{work.gndId}!='lokal'">
+                <f:then>
+                    <f:link.external target="_blank" uri="https://d-nb.info/{work.gndId}">
+                        GND-ID {work.gndId}
+                    </f:link.external>
+                </f:then>
+                <f:else>
+                    <small>
+                        lokaler Werkdatensatz
+                    </small>
+                </f:else>
+            </f:if>
+        </p>
+        <table>
+            <tr>
+                <td>
+                    Normtitel
+                </td>
+                <td>
+                    {work.title}
+                </td>
+            </tr>
+            <f:if condition="{work.titleNo}||{work.titleInstrument}||{work.tonality}">
+                <tr>
+                    <td>
+                        Ergänzende Titelinformationen
+                    </td>
+                    <td>
+                        <f:if condition="{work.titleNo}">
+                            <span id="title-no">
+                                Nummerierung: {work.titleNo}
+                            </span>
+                        </f:if>
+                        <f:if condition="{work.titleInstrument}">
+                            <span id="title-instrument">
+                                Instrument: {work.titleInstrument}
+                            </span>
+                        </f:if>
+                        <f:if condition="{work.tonality}">
+                            <span id="tonality">
+                                Tonart: {work.tonality}
+                            </span>
+                        </f:if>
+                    </td>
+                </tr>
+            </f:if>
+            <tr>
+                <td>
+                    Komponist
+                </td>
+                <td>
+                    <f:if condition="{work.firstcomposer}">
+                        <f:then>
+                            <f:link.action action="show" controller="Person" arguments="{person:work.firstcomposer}">
+                                {work.firstcomposer.name}
+                            </f:link.action>
+                            <f:if condition="{work.firstcomposer.dateOfBirth}">
+                                <span data-tooltip title="*{work.firstcomposer.dateOfBirth->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfBirth}, &#x271D;{work.firstcomposer.dateOfDeath->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfDeath}">
+                                    ({work.firstcomposer.dateOfBirth->f:format.date(format:'Y')}&ndash; 
+                                    {work.firstcomposer.dateOfDeath->f:format.date(format:'Y')})
+                                </span>
+                            </f:if>
+                        </f:then>
+                        <f:else>
+                            <em> Komponist unbekannt </em>
+                        </f:else>
+                    </f:if>
+                </td>
+            </tr>
+            <f:if condition="{work.dateOfProduction}">
+                <tr>
+                    <td>
+                        Produktionsjahr
+                    </td>
+                    <td>
+                        {work.dateOfProduction->f:format.date(format:'Y')}
+                    </td>
+                </tr>
+            </f:if>
+            <f:if condition="{work.geographicAreaCode}">
+                <tr>
+                    <td>
+                        geografischer Code
+                    </td>
+                    <td>
+                        {work.geographicAreaCode}
+                    </td>
+                </tr>
+            </f:if >
+            <f:if condition="{work.form}">
+                <tr>
+                    <td>
+                        Gattung
+                    </td>
+                    <td>
+                        <f:for each="{work.form}" as="form">
+                            <span class="comma">
+                                {form.name}
+                            </span>
+                        </f:for>
+                    </td>
+                </tr>
+            </f:if>
+            <f:if condition="{work.instruments}">
+                <tr>
+                    <td>
+                        Instrumentierung
+                    </td>
+                    <td>
+                        <f:for each="{work.instruments}" as="instrument">
+                            <span class="comma">
+                                {instrument.name}
+                            </span>
+                        </f:for>
+                    </td>
+                </tr>
+            </f:if>
+        </table>
+        <!--
+        <p class="info">
+            Die mvdb hat keinen Einfluss auf die aus der GND entnommenen Informationen.
+        </p>
+        -->
+    </div>
+
+    <h2> Wirtschaftsdaten </h2>
+
+    <div id="graphics">
+        <h3> Grafische Darstellung <small> Klicken zum Ausblenden </small> </h3>
+        <div id="help-text">
+            <h3> Hilfe zur Grafik <small> Klicken zum Anzeigen </small> </h3>
+            <div>
+                <p>
+                    Die Matrixdarstellung schlüsselt auf, in welchen Verlagsartikeln (also: Ausgaben) ein Werk in der mvdb erfasst ist.
+                    Die Listen sind hierarchisiert geordnet zuerst nach Verlagskürzel, dann nach Verlagsartikel und schließlich nach den darin enthaltenen Teilartikeln.
+                    Das ist an den Stammbaum-Strukturen ablesbar.
+                </p>
+                <p>
+                    An den Punkten in den senkrechten Spalten lässt sich die jeweilige Ausgabeform ablesen:
+                    Jeder Zeile entspricht genau eine Spalte.
+                    Die Gesamtauflage des Verlagsartikels ist dann im Balken rechts summiert.
+                </p>
+                <p>
+                    Unterhalb der Matrix werden die Häufigkeiten der verschiedenen Ausgabeformen im Querschnitt der Verlagsartikel summiert.
+                </p>
+                <p>
+                    Datumsspannen und genaue Mengeangaben werden angezeigt, wenn man mit dem Mauszeiger über die Punkte und Balken fährt
+                </p>
+            </div>
+        </div>
+        <div id="work-data"> </div>
+    </div>
+    <div id="table">
+        <h3> Tabellen <small> Klicken zum Ausblenden </small> </h3>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th> Artikel </th>
+                        <th> Teilartikel </th>
+                        <th> Auflagen </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <f:for each="{publisherMikroItems}" as="publisherMikroItem">
+                        <tr>
+                            <td>
+                                {publisherMikroItem.publisherMakroItem.mvdbId} </td>
+
+
+                            <td class="mikro-id">
+                                {publisherMikroItem.mvdbId} </td>
+                            <td class="sum">
+                                <f:for each="{publisherMikroItem.publisherActions}" as="publisherAction">
+                                    <f:if condition="{publisherAction.type}=='print'">
+                                        {publisherAction.quantity};
+                                    </f:if>
+                                </f:for>
+                            </td>
+                        </tr>
+                    </f:for>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <f:if condition="{subWorks}">
+        <h3> Teilwerke </h3>
+        <ul>
+            <f:for each="{subWorks}" as="subWork">
+                <li> 
+                    <span class="title"> {subWork.subWork.fullTitle} </span>
+                    <f:if condition="{subWork.subWork.opusNo}">
+                        <small> op. {subWork.subWork.opusNo} </small>
+                    </f:if>
+                    <f:if condition="{subWork.subWork.indexNo}">
+                        <small> {subWork.subWork.indexNo} </small>
+                    </f:if>
+                    <f:if condition="{subWork.subWork.gndId}!='lokal'">
+                        <f:then>
+                            <f:link.external uri="https://d-nb.info/{work.gndId}" target="_blank">
+                                ({subWork.subWork.gndId})
+                            </f:link.external>
+                        </f:then>
+                        <f:else>
+                            <em> (lokaler Datensatz) </em>
+                        </f:else>
+                    </f:if>
+                    <f:if condition="{subWork.makros}">
+                        gedruckt in:
+                        <f:for each="{subWork.makros}" as="makro">
+                            <f:link.action action="show" controller="PublisherMakroItem" arguments="{publisherMakroItem:makro}">
+                                {makro.mvdbId}: {makro.title}
+                            </f:link.action>
+                        </f:for>
+                    </f:if>
+                </li>
+            </f:for>
+        </ul>
+    </f:if>
+
+    <div class="subworks">
+        <f:for each="{subWorks}" as="subWork">
+            <div class="subwork">
+                <div class="title">
+                    {subWork.subWork.title} {subWork.subWork.titleNo}
+                </div>
+                <div class="gndId">
+                    {subWork.subWork.gndId}
+                </div>
+                <div class="submakromikros">
+                    <f:render partial="Work/WorkStructure" arguments="{publisherMikroItems:subWork.mikros,publisherActions:publisherActions}" />
+                </div>
+            </div>
+        </f:for>
+    </div>
+
+	<f:if condition="!{subWorks}||{publisherMakroItems}">
+		<h3> Gedruckt in </h3>
+
+		<f:if condition="{publisherMakroItems}">
+			<f:then>
+				<ul class="printed-in">
+					<f:for each="{publisherMakroItems}" as="publisherMakroItem">
+						<li>
+							<f:link.action action="show" controller="PublisherMakroItem" arguments="{publisherMakroItem:publisherMakroItem}">
+								{publisherMakroItem.mvdbId}: {publisherMakroItem.title}
+							</f:link.action>
+						</li>
+					</f:for >
+				</ul>
+			</f:then>
+			<f:else>
+				<em> Das Werk ist in keinem Verlagsartikel in der mvdb gedruckt worden. </em>
+			</f:else>
+		</f:if>
+	</f:if>
+
+</f:section>
+</html>

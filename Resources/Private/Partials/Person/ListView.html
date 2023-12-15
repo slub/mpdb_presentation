@@ -1,0 +1,15 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <span class="list-view-symbol">
+        {indices.person.symbol}
+    </span>
+    <f:link.external uri="https://d-nb.info/gnd/{entity._id}" target="_blank">
+        <span class="list-view-id">
+            {entity._id}
+        </span>
+    </f:link.external>
+    <f:link.action action="show" controller="Person" arguments="{person:entity._source.uid}">
+        <span class="list-view-title">
+            {entity._source.name}
+        </span>
+    </f:link.action>
+</html>
