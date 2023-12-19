@@ -6,6 +6,7 @@ use Elasticsearch\Client;
 use Illuminate\Support\Collection;
 use Slub\MpdbCore\Domain\Model\Publisher;
 use Slub\MpdbCore\Common\ElasticClientBuilder;
+use Slub\MpdbCore\Command\IndexCommand;
 use Slub\MpdbPresentation\Controller\AbstractController;
 
 class ElasticSearchService implements SearchServiceInterface
@@ -140,6 +141,12 @@ class ElasticSearchService implements SearchServiceInterface
     {
         if ($this->index != '') {
             $this->params['index'] = $this->index;
+        } else {
+            $this->params['index'] = Collection::wrap([
+                IndexCommand::PUBLISHED_ITEM_INDEX,
+                IndexCommand::WORK_INDEX,
+                IndexCommand::PERSON_INDEX])->
+                join(',');
         }
 
         if ($this->uid != -1) {
