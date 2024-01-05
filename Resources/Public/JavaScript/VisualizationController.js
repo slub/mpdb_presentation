@@ -3,9 +3,28 @@ let tx_publisherdb_visualizationController = {
         tx_publisherdb_visualizationStatus.data = data;
     },
 
+    set publishers(publishers) {
+        if (!tx_publisherdb_visualizationStatus.data) {
+            throw new Error('Provide data before publishers.');
+        }
+
+        const firstTwoCapitals = /\b[A-Z][A-Z]/;
+        const realisedPublishers = tx_publisherdb_visualizationStatus.data.published_items
+            .map(d => firstTwoCapitals.exec(d.id)[0]);
+        const uniqueRealisedPublishers = [ ... new Set(realisedPublishers) ];
+        const publisherMap = uniqueRealisedPublishers
+            .map(d => ({ 
+                id: d,
+                name: publishers.filter(p => p.shorthand == d)[0].name
+            }));
+
+        tx_publisherdb_visualizationStatus.publishers = publisherMap;
+        tx_publisherdb_visualizationStatus.currentPublisher = publisherMap[0].id;
+    },
+
     set config(config) {
         if (!tx_publisherdb_visualizationStatus.data) {
-            throw new Error('Provide data first and configuration second.');
+            throw new Error('Provide data before configuration.');
         }
 
         tx_publisherdb_visualizationStatus.movingAverages = config.movingAverages;
@@ -14,43 +33,10 @@ let tx_publisherdb_visualizationController = {
 
         tx_publisherdb_tableController.target = config.tableTarget;
         tx_publisherdb_dashboardController.target = config.dashboardTarget;
-        //tx_publisherdb_graphController.target = config.graphTarget;
+        tx_publisherdb_graphController.target = config.graphTarget;
 
         tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_tableController);
         tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_dashboardController);
-        //tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_graphController);
+        tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_graphController);
     }
 }
-
-/*
-tx_publisherdb_visualizationController.setData = (data) => {
-    this.data = data;
-}
-
-tx_publisherdb_visualizationController.config = (config) => {
-    this.config = config;
-}
-
-class VisualizationController extends Singleton {
-
-    constructor(config, data) {
-        this.id = config.id;
-        this.target = config.target;
-        this.movingAverages = config.movingAverages;
-        this.data = data;
-
-        this.#movingAverageSpan = config.movingAverages.reduce( (a, b) => a < b ? a : b );
-        new TableController(config, data, visualizationStatus);
-
-        this.init();
-    }
-
-    init() {
-        console.log(this.data);
-        console.log(`#${this.target}`);
-        console.log($(`#${this.target}`));
-
-    };
-
-}
-*/

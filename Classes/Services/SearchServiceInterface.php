@@ -12,7 +12,7 @@ interface SearchServiceInterface
 
     public function setSearchterm(string $searchTerm): SearchServiceInterface;
 
-    public function setUid(int $uid): SearchServiceInterface;
+    public function setId(string $ud): SearchServiceInterface;
 
     public function setFrom(int $from): SearchServiceInterface;
 

@@ -122,6 +122,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </div>
         <div id="{graphTarget}"></div>
     </div>
+    <div id="{dashboardTarget}"></div>
+    <div id="table">
+        <h3> Tabellen <small> Klicken zum Ausblenden </small> </h3>
+        <div id="{tableTarget}"> </div>
+    </div>
 
     <f:format.htmlentitiesDecode>{personGraph}</f:format.htmlentitiesDecode>
     <script>
@@ -158,6 +163,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </f:else>
     </f:if>
 
+    {visualizationCall->f:format.raw()}
 </f:section>
 <f:section name="wrap"/>
 <f:section name="sidebar"/>

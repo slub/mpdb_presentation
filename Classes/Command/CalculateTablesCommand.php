@@ -2,8 +2,6 @@
 
 namespace SLUB\MpdbPresentation\Command;
 
-// TODO name sequence steps, buffer results and reuse them
-
 use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Collection;
 use Symfony\Component\Console\Command\Command;
@@ -30,11 +28,16 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 class CalculateTablesCommand extends Command
 {
 
-    protected Collection $publishedItems;
-    protected Collection $publishedItemTables;
     protected Client $elasticClient;
+    protected string $prefix;
+    protected Collection $composers;
+    protected Collection $composerTables;
+    protected Collection $publishedItemTables;
+    protected Collection $publishedItems;
+    protected Collection $works;
+    protected Collection $workTables;
 
-    const BULKSIZE = 500;
+    const BULKSIZE = 100;
 
     /**
      * Pre-Execution configuration
@@ -57,6 +60,8 @@ class CalculateTablesCommand extends Command
         $this->client = ElasticClientBuilder::create()->
             autoconfig()->
             build();
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
+        $prefix = $extConf['prefix'];
         $this->publishedItems = new Collection();
         $this->publishedItemTables = new Collection();
     }
@@ -74,14 +79,50 @@ class CalculateTablesCommand extends Command
         $this->io->section('Fetching published items');
         $this->fetchPublishedItems();
 
-        $this->io->section('Calculating tables for published items');
-        $this->calculatePublishedItems();
+        $this->io->section('Grouping published items');
+        $this->groupPublishedItems();
 
-        $this->io->section('Committing tables for published items');
+        $this->io->section('Calculating tables');
+        $this->calculateTables();
+
+        $this->io->section('Committing tables');
         $this->commitPublishedItemTables();
 
         $this->io->success('All tables built and committed.');
         return 0;
+    }
+
+    protected function groupPublishedItems(): void
+    {
+        $this->io->progressStart(count($this->publishedItems));
+        $workGroups = [];
+        $composerGroups = [];
+        foreach ($this->publishedItems as $publishedItem) {
+            $source = $publishedItem['_source'];
+            $works = Collection::wrap($source['works']);
+            $workIds = $works->pluck('gnd_id');
+            $composers = $works->pluck('composers')->collapse();
+            $composerIds = $composers->pluck('gnd_id');
+
+            foreach($workIds as $workId) {
+                if (!isset($workGroups[$workId])) {
+                    $workGroups[$workId] = [];
+                }
+                $workGroups[$workId][] = $source['mvdb_id'];
+            }
+
+            foreach($composerIds as $composerId) {
+                if (!isset($composerGroups[$composerId])) {
+                    $composerGroups[$composerId] = [];
+                }
+                $composerGroups[$composerId][] = $source['mvdb_id'];
+            }
+            $this->io->progressAdvance();
+        }
+        $this->io->progressFinish();
+
+        $this->works = Collection::wrap($workGroups);
+        $this->composers = Collection::wrap($composerGroups);
     }
 
     /**
@@ -141,17 +182,54 @@ class CalculateTablesCommand extends Command
      *
      * @return array
      */
-    protected function calculatePublishedItems(): void
+    protected function calculateTables(): void
     {
-        $this->io->progressStart(count($this->publishedItems));
+        $this->count = count($this->publishedItems) + count($this->works) + count($this->composers);
+        $this->io->progressStart($this->count);
         $this->publishedItemTables = $this->publishedItems->
-            map(function ($item) { 
+            mapWithKeys(function ($item) { 
                 $this->io->progressAdvance();
                 return self::samplePublishedItemData($item); 
+            });
+        $this->workTables = $this->works->
+            mapWithKeys(function ($work, $key) {
+                $this->io->progressAdvance();
+                return self::connectPublishedItems($work, $key, $this->publishedItemTables);
+            });
+        $this->composerTables = $this->composers->
+            mapWithKeys(function ($work, $key) {
+                $this->io->progressAdvance();
+                return self::connectPublishedItems($work, $key, $this->publishedItemTables);
             });
         $this->io->progressFinish();
     }
 
+    protected static function connectPublishedItems(array $entity, string $key, Collection $publishedItemTables)
+    {
+        $connectedItems = Collection::wrap($entity)->map(function ($item) use ($publishedItemTables) { return $publishedItemTables[$item]; });
+
+        return [ $key => [ 'id' => $key, 'published_items' => $connectedItems ] ];
+    }
+
+    protected function getParams(array $entity, string $index): array
+    {
+        $params = [];
+        $params[] = [ 'index' =>
+            [
+                '_index' => $index,
+                '_id' => $entity['id']
+            ]
+        ];
+        $params[] = json_encode($entity);
+
+        return $params;
+    }
+
+    protected function commitChunk(Collection $chunk, string $index): void
+    {
+        $params = $chunk->map(function($entity) use ($index) { return self::getParams($entity, $index); })->values()->collapse();
+        $this->client->bulk([ 'body' => $params->all() ]);
+    }
     /**
      * Commits indices to Elasticsearch
      *
@@ -159,34 +237,35 @@ class CalculateTablesCommand extends Command
      */
     protected function commitPublishedItemTables(): void
     {
-        $this->io->text('Committing the published item tables index');
-        $this->io->progressStart(count($this->publishedItemTables));
-        if ($this->client->indices()->exists(['index' => PublishedItem::TABLE_INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => PublishedItem::TABLE_INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => PublishedItemController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => PublishedItemController::TABLE_INDEX_NAME]);
+        }
+        if ($this->client->indices()->exists(['index' => WorkController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => WorkController::TABLE_INDEX_NAME]);
+        }
+        if ($this->client->indices()->exists(['index' => PersonController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => PersonController::TABLE_INDEX_NAME]);
         }
 
-        $params = [];
-        $params = [ 'body' => [] ];
-        $bulkCount = 0;
-        foreach ($this->publishedItemTables as $document) {
-            $params['body'][] = [ 'index' => 
-                [ 
-                    '_index' => PublishedItem::TABLE_INDEX_NAME,
-                    '_id' => $document['id']
-                ] 
-            ];
-            $params['body'][] = json_encode($document);
+        $this->io->progressStart($this->count);
 
-            $this->io->progressAdvance();
-            $bulkCount++;
-            if ($bulkCount == self::BULKSIZE) {
-                $this->client->bulk($params);
-                $params = [ 'body' => [] ];
-                $bulkCount = 0;
-            }
-        }
+        $this->publishedItemTables->chunk(self::BULKSIZE)->each(
+            function($chunk) { 
+                $this->io->progressAdvance(self::BULKSIZE);
+                $this->commitChunk($chunk, PublishedItemController::TABLE_INDEX_NAME);
+            });
+        $this->workTables->chunk(self::BULKSIZE)->each(
+            function($chunk) { 
+                $this->io->progressAdvance(self::BULKSIZE);
+                $this->commitChunk($chunk, WorkController::TABLE_INDEX_NAME);
+            });
+        $this->composerTables->chunk(self::BULKSIZE)->each(
+            function($chunk) { 
+                $this->io->progressAdvance(self::BULKSIZE);
+                $this->commitChunk($chunk, PersonController::TABLE_INDEX_NAME);
+            });
+
         $this->io->progressFinish();
-        $this->client->bulk($params);
     }
 
     protected static function mapQuantities(array $item) {
@@ -227,9 +306,12 @@ class CalculateTablesCommand extends Command
             map(function ($item) { return self::samplePublishedSubitemData($item); })->
             toArray();
 
-        return [
-            'id' => $publishedItem['_id'],
-            'published_subitems' => $publishedSubitems
+        return [ 
+            $publishedItem['_id'] =>
+            [
+                'id' => $publishedItem['_id'],
+                'published_subitems' => $publishedSubitems
+            ]
         ];
     }
 

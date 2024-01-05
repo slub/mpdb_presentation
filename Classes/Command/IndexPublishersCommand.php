@@ -31,6 +31,7 @@ class IndexPublishersCommand extends Command
     const SHORTHAND_COLNAME = 'shorthand';
     const PUBLIC_COLNAME = 'public';
     const TABLE_NAME = 'tx_mpdbcore_domain_model_publisher';
+    const INDEX_NAME = 'publishers';
 
     /**
      * Pre-Execution configuration
@@ -72,8 +73,8 @@ class IndexPublishersCommand extends Command
             )->
             from(self::TABLE_NAME);
 
-        if ($this->client->indices()->exists(['index' => Publisher::INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => Publisher::INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => self::INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => self::INDEX_NAME]);
         }
 
         Collection::wrap($qb->execute()->fetchAll())->
@@ -92,7 +93,7 @@ class IndexPublishersCommand extends Command
         unset($publisher[self::PUBLIC_COLNAME]);
 
         $params = [
-            'index' => Publisher::INDEX_NAME,
+            'index' => self::INDEX_NAME,
             'id' => $publisher['uid'],
             'body' => $publisher ];
 

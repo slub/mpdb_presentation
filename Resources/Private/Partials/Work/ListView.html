@@ -1,30 +1,37 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-    <div class="list-view-work">
-        <span class="list-view-symbol">
-            {indices.work.symbol}
-        </span>
-        <f:link.external uri="https://d-nb.info/gnd/{entity._id}" target="_blank">
-            <span class="list-view-id">
-                {entity._id}
-            </span>
-        </f:link.external>
-        <f:link.action action="show" controller="Work" arguments="{work:entity._source.uid}">
-            <span class="list-view-title">
-                {entity._source.full_title}
-            </span>
-        </f:link.action>
-        <span class="list-view-composer">
-            {entity._source.composers.0.name}
-        </span>
-        <span class="list-view-publishers">
-            {entity._source.publishers}
-        </span>
+    <div class="entity-type">
+        Werk
     </div>
-    <div class="list-view-work_editions">
-        <f:for each="{entity._source.published_items}" as="item">
-            <span class="list-view-id">
-                {item.mvdb_id}
+    <div class="entity-title">
+        <f:link.action action="show" controller="Work" arguments="{work:entity._source.uid}">
+            {entity._source.full_title}
+        </f:link.action>
+    </div>
+    <div class="entity-body">
+        <div class="entity-supplement">
+            <span class="entity-composer">
+                {entity._source.composers.0.name}
             </span>
-        </f:for>
+            <f:if condition="{entity._source.date_of_production}">
+                <span class="entity-date-of-production">
+                    {entity._source.date_of_production -> f:format.date(format:"%Y")}
+                </span>
+            </f:if>
+            <span class="entity-gnd-link">
+                <f:link.external uri="https://d-nb.info/gnd/{entity._id}" target="_blank">
+                    <span class="list-view-id">
+                        {entity._id}
+                    </span>
+                    <span class="list-view-info">
+                        ℹ️
+                    </span>
+                </f:link.external>
+            </span>
+        </div>
+        <div class="entity-preview">
+            <f:for each="{entity._source.published_items}" as="published_item" iteration="i">
+                <span class="entity-preview-title">{published_item.mvdb_id}</span><f:if condition="!{i.isLast}">,</f:if>
+            </f:for>
+        </div>
     </div>
 </html>

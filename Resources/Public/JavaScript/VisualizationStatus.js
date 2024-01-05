@@ -1,8 +1,8 @@
-tx_publisherdb_granularity = {
+const tx_publisherdb_granularity = {
     BY_DATE: 0,
     PER_YEAR: 1
 }
-tx_publisherdb_cumulativity = {
+const tx_publisherdb_cumulativity = {
     ABSOLUTE: 0,
     MOVING_AVERAGE: 1,
     CUMULATIVE: 2
@@ -23,14 +23,52 @@ let tx_publisherdb_visualizationStatus = {
     _views: [],
     _data: [],
     _targetData: 'prints_per_year',
+    _currentPublisher: '',
+    _isPublishedItem: false,
+    _publishers: [],
+    singleItem: false,
+    singleYear: false,
+    _years: [],
+    _subitemIds: [],
+
+    set subitemIds (subitemIds) {
+        this._subitemIds = subitemIds;
+        if (this._subitemIds.length == 1) {
+            this.singleItem = true;
+        } else {
+            this.singleItem = false;
+        }
+    },
+
+    get subitemIds () {
+        return this._subitemIds;
+    },
+
+    set years (years) {
+        this._years = years;
+        if (this._years.length == 1) {
+            this.singleYear = true;
+        } else {
+            this.singleYear = false;
+        }
+    },
+
+    get years () {
+        return this._years;
+    },
 
     get targetData () {
         return this._targetData;
     },
 
-    //get movingAverage () {
-        //return this._movingAverage;
-    //},
+    set currentPublisher (currentPublisher) {
+        this._currentPublisher = currentPublisher;
+        this.updateView();
+    },
+
+    get currentPublisher () {
+        return this._currentPublisher;
+    },
 
     set config (config) {
         this._config = config;
@@ -44,6 +82,14 @@ let tx_publisherdb_visualizationStatus = {
     set movingAverageSpan (movingAverageSpan) {
         this._movingAverageSpan = movingAverageSpan;
         this.updateView();
+    },
+
+    set publishers (publishers) {
+        this._publishers = publishers;
+    },
+
+    get publishers () {
+        return this._publishers;
     },
 
     /*
@@ -74,8 +120,13 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     set data (data) {
+        this._isPublishedItem = data.published_subitems ? true : false;
         this._data = data;
         this.updateView();
+    },
+
+    get isPublishedItem () {
+        return this._isPublishedItem;
     },
 
     get data () {
@@ -93,6 +144,13 @@ let tx_publisherdb_visualizationStatus = {
     excludeElement(id) {
         if (!this._excludedElements.includes(id)) {
             this._excludedElements.push(id);
+
+            if (this._subitemIds.length - this._excludedElements.length == 1) {
+                this.singleItem = true;
+            } else {
+                this.singleItem = false;
+            }
+
             this.updateView();
         }
     },
@@ -100,6 +158,13 @@ let tx_publisherdb_visualizationStatus = {
     excludeYear(year) {
         if (!this._excludedYears.includes(year)) {
             this._excludedYears.push(year);
+
+            if (this._years.length - this._excludedYears.length == 1) {
+                this.singleYear = true;
+            } else {
+                this.singleYear = false;
+            }
+
             this.updateView();
         }
     },
@@ -114,29 +179,80 @@ let tx_publisherdb_visualizationStatus = {
         this.updateView();
     },
 
-    updateView: function (_) {
-        console.log(this._config);
-        console.log(this._config.cumulativity);
-        console.log(tx_publisherdb_cumulativity.CUMULATIVE);
+    updateView () {
         if (this._config.cumulativity == tx_publisherdb_cumulativity.ABSOLUTE) {
-            console.log('cumulativity absolute');
             if (this._config.granularity == tx_publisherdb_granularity.BY_DATE) {
                 this._targetData = 'prints_by_date';
             } else {
                 this._targetData = 'prints_per_year';
             }
         } else if (this._config.cumulativity == tx_publisherdb_cumulativity.CUMULATIVE) {
-            console.log('cumulativity cumulative');
             if (this._config.granularity == tx_publisherdb_granularity.BY_DATE) {
                 this._targetData = 'prints_by_date_cumulative';
             } else {
                 this._targetData = 'prints_per_year_cumulative';
             }
         } else {
-            console.log('cumulativity movavg');
             this._targetData = `prints_per_year_ma_${this._config.movingAverage}`;
         }
+
+        this.updateData();
         this._views.forEach( view => view.render() );
+    },
+
+    updateData() {
+        // retrieve published subitems
+        const publishedSubitems = this.isPublishedItem ? this.data.published_subitems :
+            this.data.published_items.map(d => d.published_subitems).flat();
+        const currentPublisherShorthand = this.currentPublisher ?? null;
+        const currentPublisherRegex = currentPublisherShorthand ? new RegExp(`\\b${currentPublisherShorthand}_\w*`) : null;
+
+        // retrieve ids for table header
+        this.subitemIds = publishedSubitems.map(d => d.id)
+            .filter(d => !this.excludedElements.includes(d))
+            .filter(d => currentPublisherRegex ? currentPublisherRegex.test(d) : true);
+
+        // retrieve per year data including totals for table body
+        const years = publishedSubitems.map(subitem => {
+                const targetData = subitem[this.targetData] ?? [];
+                return targetData.map(print => print.date);
+            })
+            .flat();
+        this.years = d3.range(d3.min(years), d3.max(years))
+            .filter(year => !this.excludedYears.includes(year));
+
+        const yearData = this.years.map(year => ({
+                year: year,
+                items: publishedSubitems
+                    .filter(item => !this.excludedElements.includes(item.id))
+                    .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
+                    .map(prints => {
+                        const targetData = prints[this.targetData] ?? [];
+                        const targetPrint = targetData.filter(print => print.date == year);
+                        return {
+                            id: prints.id,
+                            quantity: targetPrint.length > 0 ? targetPrint[0].quantity : 0
+                        };
+                    }),
+            }))
+            .sort(this.sort)
+            .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
+        this.summedYearData = yearData.map(({year, items}) => ({
+            year, items,
+            total: items.reduce((a, b) => +a + b)
+        }));
+
+        // retrieve per item sums for table footer
+        this.sums = publishedSubitems.filter(item => !this.excludedElements.includes(item.id))
+            .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
+            .map(
+                subitem => {
+                    const targetData = subitem[this.targetData] ?? [];
+                    const filteredTargetData = targetData.filter(print => !this.excludedYears.includes(print.date));
+                    const sum = filteredTargetData.length ? filteredTargetData.map(print => print.quantity)
+                        ?.reduce( (a, b) => +a + b ) : null
+                    return { id: subitem.id, sum: sum };
+                });
     },
 
     registerView: function (view) {

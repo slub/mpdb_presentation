@@ -14,7 +14,7 @@ class ElasticSearchService implements SearchServiceInterface
     protected string $index = '';
     protected string $publisher = '';
     protected string $searchTerm = '';
-    protected int $uid = -1;
+    protected string $id = '';
     protected int $from = 0;
     protected int $size = 0;
     protected array $params = [];
@@ -30,8 +30,8 @@ class ElasticSearchService implements SearchServiceInterface
 
     public function setPublisher(string $publisher = ''): SearchServiceInterface
     {
-        if ($publisher != '' && $this->uid != -1) {
-            throw new InvalidParamsException('Attempted to restrict search for publisher while searching for uid');
+        if ($publisher != '' && $this->id != '') {
+            throw new InvalidParamsException('Attempted to restrict search for publisher while searching for id');
         }
 
         $this->publisher = $publisher;
@@ -41,8 +41,8 @@ class ElasticSearchService implements SearchServiceInterface
 
     public function setSearchterm(string $searchTerm = ''): SearchServiceInterface
     {
-        if ($searchTerm != '' && $this->uid != -1) {
-            throw new InvalidParamsException('Attempted to search for term and uid simultaneously');
+        if ($searchTerm != '' && $this->id != '') {
+            throw new InvalidParamsException('Attempted to search for term and id simultaneously');
         }
 
         $this->searchTerm = $searchTerm;
@@ -50,22 +50,22 @@ class ElasticSearchService implements SearchServiceInterface
         return $this;
     }
 
-    public function setUid(int $uid = -1): SearchServiceInterface
+    public function setId(string $id = ''): SearchServiceInterface
     {
-        if ($uid != -1 && $this->searchTerm != '') {
-            throw new InvalidParamsException('Attempted to search for term and uid simultaneously');
+        if ($id != '' && $this->searchTerm != '') {
+            throw new InvalidParamsException('Attempted to search for term and id simultaneously');
         }
-        if ($uid != -1 && $this->publisher != '') {
-            throw new InvalidParamsException('Attempted to restrict search for publisher while searching for uid');
+        if ($id != '' && $this->publisher != '') {
+            throw new InvalidParamsException('Attempted to restrict search for publisher while searching for id');
         }
 
-        if ($uid == -1) {
+        if ($id == '') {
             $this->method = 'search';
         } else {
             $this->method = 'get';
         }
 
-        $this->uid = $uid;
+        $this->id = $id;
 
         return $this;
     }
@@ -86,8 +86,8 @@ class ElasticSearchService implements SearchServiceInterface
 
     public function search(): Collection
     {
-        if ($this->uid != -1 && $this->index == '') {
-            throw new InvalidParamsException('Uid specified but index unspecified');
+        if ($this->id != '' && $this->index == '') {
+            throw new InvalidParamsException('Id specified but index unspecified');
         }
 
         $this->createParams();
@@ -95,18 +95,19 @@ class ElasticSearchService implements SearchServiceInterface
         switch ($this->method) {
             case 'search':
                 $result = $this->client->search($this->params);
+                return Collection::wrap($result['hits']['hits']);
                 break;
             case 'get':
                 $result = $this->client->get($this->params);
+                return Collection::wrap($result['_source']);
                 break;
         }
-        return Collection::wrap($result['hits']['hits']);
     }
 
     public function count(): int
     {
         if ($this->method == 'get') {
-            throw new InvalidOperationException('Attempt to count a uid based search');
+            throw new InvalidOperationException('Attempt to count a id based search');
         }
 
         $this->createParams();
@@ -121,7 +122,7 @@ class ElasticSearchService implements SearchServiceInterface
         $this->setIndex();
         $this->setPublisher();
         $this->setSearchterm();
-        $this->setUid();
+        $this->setId();
         $this->setFrom();
         $this->setSize();
         $this->method = 'search';
@@ -139,6 +140,8 @@ class ElasticSearchService implements SearchServiceInterface
 
     private function createParams(): void
     {
+        $this->params = [];
+
         if ($this->index != '') {
             $this->params['index'] = $this->index;
         } else {
@@ -149,43 +152,43 @@ class ElasticSearchService implements SearchServiceInterface
                 join(',');
         }
 
-        if ($this->uid != -1) {
-            $this->params['id'] = $this->uid;
+        if ($this->id != '') {
+            $this->params['id'] = $this->id;
         }
 
         if ($this->method == 'search') {
             $this->params['body'] = [ 'query' => [] ];
             $this->params['body']['size'] = $this->size;
             $this->params['body']['from'] = $this->from;
-        }
 
-        if ($this->searchTerm == '') {
-            $this->params['body']['query'] = [
-                'bool' => [
-                    'must' => [ [
-                        'match_all' => new \stdClass() 
-                    ] ]
-                ]
-            ];
-        } else {
-            $this->params['body']['query'] = [
-                'bool' => [
-                    'must' => [ [ 
-                        'query_string' => [
-                            'query' => $this->searchTerm
-                        ]
-                    ] ]
-                ]
-            ];
-        }
+            if ($this->searchTerm == '') {
+                $this->params['body']['query'] = [
+                    'bool' => [
+                        'must' => [ [
+                            'match_all' => new \stdClass() 
+                        ] ]
+                    ]
+                ];
+            } else {
+                $this->params['body']['query'] = [
+                    'bool' => [
+                        'must' => [ [ 
+                            'query_string' => [
+                                'query' => $this->searchTerm
+                            ]
+                        ] ]
+                    ]
+                ];
+            }
 
-        if ($this->publisher != '') {
-            $this->params['body']['query']['bool']['must'][] =
-                [ 'query_string' => [
-                    'query' => $this->publisher . '_*',
-                    'fields' => [ 'mvdb_id', 'published_items.mvdb_id', 'works.published_items.mvdb_id' ]
-                ]
-            ];
+            if ($this->publisher != '') {
+                $this->params['body']['query']['bool']['must'][] =
+                    [ 'query_string' => [
+                        'query' => $this->publisher . '_*',
+                        'fields' => [ 'mvdb_id', 'published_items.mvdb_id', 'works.published_items.mvdb_id' ]
+                    ]
+                ];
+            }
         }
     }
 }

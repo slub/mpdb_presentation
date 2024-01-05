@@ -1,6 +1,6 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
     <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:0)}</f:variable>
-    <ul class="publisher-picker">
+    <ul class="index-picker">
         <f:for each="{indices}" as="index" key="key">
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:key)}</f:variable>
             <li>

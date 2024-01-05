@@ -65,8 +65,14 @@ page {
 		lastVisited = EXT:mpdb_presentation/Resources/Public/JavaScript/LastVisitedFe.js
 		visualizationController = EXT:mpdb_presentation/Resources/Public/JavaScript/VisualizationController.js
 		tableController = EXT:mpdb_presentation/Resources/Public/JavaScript/TableController.js
-		graphController = EXT:mpdb_presentation/Resources/Public/JavaScript/GraphController.js
 		dashboardController = EXT:mpdb_presentation/Resources/Public/JavaScript/DashboardController.js
 		visualizationStatus = EXT:mpdb_presentation/Resources/Public/JavaScript/VisualizationStatus.js
+		timeseriesView = EXT:mpdb_presentation/Resources/Public/JavaScript/TimeseriesView.js
+		barplotController = EXT:mpdb_presentation/Resources/Public/JavaScript/BarplotController.js
+		subitemController = EXT:mpdb_presentation/Resources/Public/JavaScript/SubitemController.js
+		graphController = EXT:mpdb_presentation/Resources/Public/JavaScript/GraphController.js
+    }
+    includeCSS {
+        mpdb_presentation_styles = EXT:mpdb_presentation/Resources/Public/Css/layout.css
     }
 }

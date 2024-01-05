@@ -9,10 +9,11 @@ use \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use \Slub\MpdbCore\Domain\Model\Publisher;
 use \Slub\MpdbCore\Domain\Model\PublisherMakroItem;
-use \Slub\DmNorm\Domain\Model\GndWork;
 use \Slub\MpdbCore\Lib\DbArray;
 use \Slub\MpdbCore\Lib\Tools;
 use \Slub\MpdbCore\Lib\GndLib;
+use \Slub\MpdbPresentation\Command\IndexPublishersCommand;
+use \Slub\DmNorm\Domain\Model\GndWork;
 
 /***
  *
@@ -29,6 +30,8 @@ use \Slub\MpdbCore\Lib\GndLib;
  */
 class WorkController extends AbstractController
 {
+
+    const TABLE_INDEX_NAME = 'work_tables';
 
     /**
      * action show
@@ -108,6 +111,18 @@ class WorkController extends AbstractController
         }
          */
 
+        $document = $this->searchService->
+            reset()->
+            setIndex(self::TABLE_INDEX_NAME)->
+            setId($work->getGndId())->
+            search();
+
+        $visualizationCall = $this->getJsCall($document, $this->publishers);
+        $this->view->assign('publishers', $this->publishers);
+        $this->view->assign('visualizationCall', $visualizationCall);
+        $this->view->assign('tableTarget', self::TABLE_TARGET);
+        $this->view->assign('dashboardTarget', self::DASHBOARD_TARGET);
+        $this->view->assign('graphTarget', self::GRAPH_TARGET);
         $this->view->assign('work', $work);
         //$this->view->assign('subWorks', $subWorks);
         //$this->view->assign('publisherMikroItems', $outMikros);

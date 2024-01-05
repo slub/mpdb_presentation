@@ -36,9 +36,6 @@ class PublishedItemController extends AbstractController
 {
 
     const TABLE_INDEX_NAME = 'published_item_tables';
-    const DASHBOARD_TARGET = 'published_item_dashboard';
-    const TABLE_TARGET = 'published_item_table';
-    const GRAPH_TARGET = 'published_item_graph';
 
     /**
      * action show
@@ -49,8 +46,8 @@ class PublishedItemController extends AbstractController
     public function showAction(PublishedItem $publishedItem)
     {
         $sortByDate = function (PublisherAction $a, PublisherAction $b) {
-            return $a->getDateOfAction() < $b->getDateOfAction() ?
-                -1 : ( $a->getDateOfAction() == $b->getDateOfAction() ? 0 : 1 );
+            return $a->getDateOfAction() < $b->getDateOfAction() ? -1 :
+                ( $a->getDateOfAction() == $b->getDateOfAction() ? 0 : 1 );
         };
         $publisherMikroItems = $publishedItem->getPublishedSubitems()->toArray();
         $publisherActions = [];
@@ -63,13 +60,13 @@ class PublishedItemController extends AbstractController
         }
         usort($publisherActions, $sortByDate);
 
-        $document = $this->elasticClient->get([
-            'index' => self::TABLE_INDEX_NAME,
-            'id' => $publishedItem->getMvdbId()
-        ]);
-        $jsonDocument = json_encode($document['_source']);
+        $document = $this->searchService->
+            reset()->
+            setIndex(self::TABLE_INDEX_NAME)->
+            setId($publishedItem->getMvdbId())->
+            search();
 
-        $visualizationCall = $this->getJsCall($jsonDocument);
+        $visualizationCall = $this->getJsCall($document, $this->publishers);
         $publishers = $this->publisherRepository->findAll();
         $this->view->assign('publishedItem', $publishedItem);
         $this->view->assign('publisherMikroItems', $publisherMikroItems);
@@ -78,27 +75,6 @@ class PublishedItemController extends AbstractController
         $this->view->assign('tableTarget', self::TABLE_TARGET);
         $this->view->assign('graphTarget', self::GRAPH_TARGET);
         $this->view->assign('dashboardTarget', self::DASHBOARD_TARGET);
-    }
-
-    protected function getJsCall(string $data): string
-    {
-        $movingAverages = explode(',', $this->extConf['movingAverages']);
-        $config = [
-            'movingAverages' => $movingAverages,
-            'tableTarget' => self::TABLE_TARGET,
-            'graphTarget' => self::GRAPH_TARGET,
-            'dashboardTarget' => self::DASHBOARD_TARGET
-        ];
-        
-        return self::scriptWrap('document.addEventListener("DOMContentLoaded", _ => {' .
-            'tx_publisherdb_visualizationController.data = ' . $data . ';' .
-            'tx_publisherdb_visualizationController.config = ' . json_encode($config) . ';' .
-            '})');
-    }
-
-    protected static function scriptWrap(string $call): string
-    {
-        return '<script>' . $call . '</script>';
     }
 
 }

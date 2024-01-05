@@ -1,0 +1,49 @@
+div.entity-list-item {
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: solid;
+    border-color: lightgray;
+    border-width: 1px;
+
+    a {
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+
+    div.entity-type {
+        margin-bottom: -10px;
+    }
+
+    div.entity-title {
+        a {
+            font-size: 150%;
+            color:black;
+        }
+    }
+
+    div.entity-preview {
+        font-size: 90%;
+        max-height: 2.7em;
+        overflow: hidden;
+        text-overflow: "...";
+        color: darkgray;
+    }
+
+    span.entity-life-span, span.entity-date-of-production, span.entity-composer {
+        margin-right: 30px;
+    }
+
+    div.index-picker {
+        @include pagination-container;
+    }
+
+}
+
+div#tx_mpdbpresentation_table {
+    width: 100%;
+    max-width: 1200px;
+    overflow: auto;
+}

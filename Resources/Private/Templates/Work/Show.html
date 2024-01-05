@@ -1,5 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-<f:layout name="Default" />
+<f:layout name="Research" />
 
 This Template is responsible for displaying a single view for a domain object
 
@@ -190,40 +190,12 @@ Otherwise your changes will be overwritten the next time you save the extension 
                 </p>
             </div>
         </div>
-        <div id="work-data"> </div>
+        <div id="{graphTarget}"> </div>
     </div>
+    <div id="{dashboardTarget}"></div>
     <div id="table">
         <h3> Tabellen <small> Klicken zum Ausblenden </small> </h3>
-        <div>
-            <table>
-                <thead>
-                    <tr>
-                        <th> Artikel </th>
-                        <th> Teilartikel </th>
-                        <th> Auflagen </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <f:for each="{publisherMikroItems}" as="publisherMikroItem">
-                        <tr>
-                            <td>
-                                {publisherMikroItem.publisherMakroItem.mvdbId} </td>
-
-
-                            <td class="mikro-id">
-                                {publisherMikroItem.mvdbId} </td>
-                            <td class="sum">
-                                <f:for each="{publisherMikroItem.publisherActions}" as="publisherAction">
-                                    <f:if condition="{publisherAction.type}=='print'">
-                                        {publisherAction.quantity};
-                                    </f:if>
-                                </f:for>
-                            </td>
-                        </tr>
-                    </f:for>
-                </tbody>
-            </table>
-        </div>
+        <div id="{tableTarget}"> </div>
     </div>
 
     <f:if condition="{subWorks}">
@@ -298,5 +270,10 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		</f:if>
 	</f:if>
 
+    {visualizationCall->f:format.raw()}
 </f:section>
+
+<f:section name="wrap"/>
+<f:section name="sidebar"/>
+
 </html>

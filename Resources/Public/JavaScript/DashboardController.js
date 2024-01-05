@@ -1,7 +1,8 @@
-tx_publisherdb_dashboardExcludedItem = 'excluded-item';
-tx_publisherdb_dashboardExcludedYear = 'excluded-year';
+const tx_publisherdb_dashboardExcludedItem = 'excluded-item';
+const tx_publisherdb_dashboardExcludedYear = 'excluded-year';
+const tx_publisherdb_dashboardPublisher = 'publisher';
 
-tx_publisherdb_dashboardController = {
+const tx_publisherdb_dashboardController = {
     
     set target(target) {
         this._target = target;
@@ -126,5 +127,26 @@ tx_publisherdb_dashboardController = {
                 }
             }
         });
+
+        const publishers = target.append('div')
+            .attr('id', 'dashboard-publishers');
+        if (!tx_publisherdb_visualizationStatus.isPublishedItem) {
+            publishers.append('h3')
+                .text('Verlage');
+            const publisherList = publishers.append('div')
+                .attr('class', 'tiny button-group');
+            publisherList.selectAll(`a.${tx_publisherdb_dashboardPublisher}`)
+                .data(tx_publisherdb_visualizationStatus.publishers)
+                .join('a')
+                .attr('class', `${tx_publisherdb_dashboardPublisher} primary button hollow include-year`)
+                .attr('id', d => d.id)
+                .html(d => d.id)
+                .attr('title', d => d.name);
+        }
+
+        $(`a.${tx_publisherdb_dashboardPublisher}`).click ( e => {
+            tx_publisherdb_visualizationStatus.currentPublisher = e.currentTarget.id;
+        });
+
     }
 }
