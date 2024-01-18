@@ -222,7 +222,7 @@ class CalculateTablesCommand extends Command
         $params = [];
         $params[] = [ 'index' =>
             [
-                '_index' => $index,
+                '_index' => $this->prefix . $index,
                 '_id' => $entity['id']
             ]
         ];
