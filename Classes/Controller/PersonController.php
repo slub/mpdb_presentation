@@ -42,7 +42,7 @@ class PersonController extends AbstractController
             setId($person->getGndId())->
             search();
 
-        $visualizationCall = $this->getJsCall($document, $this->publishers);
+        $visualizationCall = $this->getJsCall($document, $this->publishers, $personData['name']);
         $this->view->assign('publishers', $this->publishers->all());
         $this->view->assign('visualizationCall', $visualizationCall);
         $this->view->assign('tableTarget', self::TABLE_TARGET);

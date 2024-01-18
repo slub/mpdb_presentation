@@ -66,7 +66,7 @@ class PublishedItemController extends AbstractController
             setId($publishedItem->getMvdbId())->
             search();
 
-        $visualizationCall = $this->getJsCall($document, $this->publishers);
+        $visualizationCall = $this->getJsCall($document, $this->publishers, $publishedItem->getMvdbId());
         $publishers = $this->publisherRepository->findAll();
         $this->view->assign('publishedItem', $publishedItem);
         $this->view->assign('publisherMikroItems', $publisherMikroItems);

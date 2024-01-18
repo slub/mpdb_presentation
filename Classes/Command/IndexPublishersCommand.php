@@ -33,6 +33,8 @@ class IndexPublishersCommand extends Command
     const TABLE_NAME = 'tx_mpdbcore_domain_model_publisher';
     const INDEX_NAME = 'publishers';
 
+    protected string $prefix;
+
     /**
      * Pre-Execution configuration
      *
@@ -63,6 +65,9 @@ class IndexPublishersCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
+        $this->prefix = $coreExtConf['prefix'];
+
         $qb = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(self::TABLE_NAME);
         $qb->select(
@@ -73,8 +78,8 @@ class IndexPublishersCommand extends Command
             )->
             from(self::TABLE_NAME);
 
-        if ($this->client->indices()->exists(['index' => self::INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => self::INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => $prefix . self::INDEX_NAME]);
         }
 
         Collection::wrap($qb->execute()->fetchAll())->
@@ -93,7 +98,7 @@ class IndexPublishersCommand extends Command
         unset($publisher[self::PUBLIC_COLNAME]);
 
         $params = [
-            'index' => self::INDEX_NAME,
+            'index' => $this->prefix . self::INDEX_NAME,
             'id' => $publisher['uid'],
             'body' => $publisher ];
 

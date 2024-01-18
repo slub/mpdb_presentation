@@ -117,7 +117,7 @@ class WorkController extends AbstractController
             setId($work->getGndId())->
             search();
 
-        $visualizationCall = $this->getJsCall($document, $this->publishers);
+        $visualizationCall = $this->getJsCall($document, $this->publishers, $work->getFullTitle());
         $this->view->assign('publishers', $this->publishers);
         $this->view->assign('visualizationCall', $visualizationCall);
         $this->view->assign('tableTarget', self::TABLE_TARGET);

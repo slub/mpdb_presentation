@@ -11,6 +11,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Slub\MpdbCore\Lib\DbArray;
 use Slub\MpdbCore\Common\ElasticClientBuilder;
 use Slub\MpdbPresentation\Domain\Model\PublishedItem;
+use Slub\MpdbPresentation\Controller\PublishedItemController;
+use Slub\MpdbPresentation\Controller\WorkController;
+use Slub\MpdbPresentation\Controller\PersonController;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,7 +64,7 @@ class CalculateTablesCommand extends Command
             autoconfig()->
             build();
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
-        $prefix = $extConf['prefix'];
+        $this->prefix = $extConf['prefix'];
         $this->publishedItems = new Collection();
         $this->publishedItemTables = new Collection();
     }
@@ -132,9 +135,12 @@ class CalculateTablesCommand extends Command
      */
     protected function fetchPublishedItems(): void
     {
+		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
+        $prefix = $coreExtConf['prefix'];
+
         $params = [
             // TODO name index
-            'index'  => 'published_item',
+            'index'  => $prefix . 'published_item',
             'body'   => [
                 'query' => [
                     'match_all' => new \stdClass()
@@ -237,14 +243,14 @@ class CalculateTablesCommand extends Command
      */
     protected function commitPublishedItemTables(): void
     {
-        if ($this->client->indices()->exists(['index' => PublishedItemController::TABLE_INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => PublishedItemController::TABLE_INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => $this->prefix . PublishedItemController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => $this->prefix . PublishedItemController::TABLE_INDEX_NAME]);
         }
-        if ($this->client->indices()->exists(['index' => WorkController::TABLE_INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => WorkController::TABLE_INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => $this->prefix . WorkController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => $this->prefix . WorkController::TABLE_INDEX_NAME]);
         }
-        if ($this->client->indices()->exists(['index' => PersonController::TABLE_INDEX_NAME])) {
-            $this->client->indices()->delete(['index' => PersonController::TABLE_INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => $this->prefix . PersonController::TABLE_INDEX_NAME])) {
+            $this->client->indices()->delete(['index' => $this->prefix . PersonController::TABLE_INDEX_NAME]);
         }
 
         $this->io->progressStart($this->count);

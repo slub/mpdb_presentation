@@ -82,7 +82,7 @@ abstract class AbstractController extends CoreAbstractController
         return [ $key => $body ];
     }
 
-    protected function getJsCall(Collection $data, Collection $publishers = null): string
+    protected function getJsCall(Collection $data, Collection $publishers = null, string $title): string
     {
         $movingAverages = explode(',', GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_presentation')['movingAverages']);
         $config = [
@@ -96,6 +96,7 @@ abstract class AbstractController extends CoreAbstractController
         if ($publishers) {
             $call .= 'tx_publisherdb_visualizationController.publishers = ' . json_encode($publishers->all()) . ';';
         }
+        $call .= 'tx_publisherdb_visualizationController.title = ' . $title . ';';
         $call .= 'tx_publisherdb_visualizationController.config = ' . json_encode($config) . ';';
         
         return self::callWrap($call);
