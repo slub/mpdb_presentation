@@ -2,14 +2,14 @@
 namespace Slub\MpdbPresentation\Controller;
 
 use Illuminate\Support\Collection;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use Slub\MpdbCore\Controller\AbstractController as CoreAbstractController;
 use Slub\MpdbPresentation\Command\IndexPublishersCommand;
 use Slub\MpdbPresentation\Services\SearchServiceInterface;
 use Slub\MpdbPresentation\Services\SearchServiceNotFoundException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 abstract class AbstractController extends CoreAbstractController
 {
@@ -76,10 +76,12 @@ abstract class AbstractController extends CoreAbstractController
 
     private static function localizeIndex(array $array, string $key): array
     {
+		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
+        $prefix = $coreExtConf['prefix'];
         $body = $array;
         $translation = LocalizationUtility::translate($key, self::EXT_NAME);
         $body['translation'] = ucwords($translation);
-        return [ $key => $body ];
+        return [ $prefix . $key => $body ];
     }
 
     protected function getJsCall(Collection $data, Collection $publishers = null, string $title): string

@@ -8,6 +8,7 @@ use Slub\MpdbCore\Domain\Model\Publisher;
 use Slub\MpdbCore\Common\ElasticClientBuilder;
 use Slub\MpdbCore\Command\IndexCommand;
 use Slub\MpdbPresentation\Controller\AbstractController;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ElasticSearchService implements SearchServiceInterface
@@ -25,7 +26,11 @@ class ElasticSearchService implements SearchServiceInterface
 
     public function setIndex(string $index = ''): SearchServiceInterface
     {
-        $this->index = $this->prefix . $index;
+        if ($index == '') {
+            $this->index = '';
+        } else {
+            $this->index = $this->prefix . $index;
+        }
 
         return $this;
     }
@@ -151,9 +156,9 @@ class ElasticSearchService implements SearchServiceInterface
             $this->params['index'] = $this->index;
         } else {
             $this->params['index'] = Collection::wrap([
-                IndexCommand::PUBLISHED_ITEM_INDEX,
-                IndexCommand::WORK_INDEX,
-                IndexCommand::PERSON_INDEX])->
+                $this->prefix . IndexCommand::PUBLISHED_ITEM_INDEX,
+                $this->prefix . IndexCommand::WORK_INDEX,
+                $this->prefix . IndexCommand::PERSON_INDEX])->
                 join(',');
         }
 
