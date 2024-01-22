@@ -98,7 +98,7 @@ abstract class AbstractController extends CoreAbstractController
         if ($publishers) {
             $call .= 'tx_publisherdb_visualizationController.publishers = ' . json_encode($publishers->all()) . ';';
         }
-        $call .= 'tx_publisherdb_visualizationController.title = ' . $title . ';';
+        $call .= 'tx_publisherdb_visualizationController.title = "' . $title . '";';
         $call .= 'tx_publisherdb_visualizationController.config = ' . json_encode($config) . ';';
         
         return self::callWrap($call);
