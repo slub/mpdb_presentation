@@ -11,7 +11,7 @@
     "require": {
         "typo3/cms-core": "^11",
         "elasticsearch/elasticsearch": "^7",
-        "slub/mpdb-core": "dev-main",
+        "slub/mpdb-core": "dev-test",
         "fluidtypo3/vhs": "^6",
         "illuminate/collections": "^8"
     },
