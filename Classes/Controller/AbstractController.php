@@ -77,11 +77,10 @@ abstract class AbstractController extends CoreAbstractController
     private static function localizeIndex(array $array, string $key): array
     {
 		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
-        $prefix = $coreExtConf['prefix'];
         $body = $array;
         $translation = LocalizationUtility::translate($key, self::EXT_NAME);
         $body['translation'] = ucwords($translation);
-        return [ $prefix . $key => $body ];
+        return [ $key => $body ];
     }
 
     protected function getJsCall(Collection $data, Collection $publishers = null, string $title): string
