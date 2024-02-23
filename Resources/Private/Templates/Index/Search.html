@@ -28,7 +28,7 @@
             <div class="entity-list">
                 <f:for each="{entities}" as="entity">
                     <div class="entity-list-item">
-                        <f:render partial="{indices.{entity._index}.controller}/ListView" arguments="{entity=entity,indices=indices}" />
+                        <f:render partial="{indices.{entity._source.type}.controller}/ListView" arguments="{entity=entity,indices=indices}" />
                     </div>
                 </f:for>
             </div>
