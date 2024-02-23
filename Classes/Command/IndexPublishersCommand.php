@@ -84,7 +84,6 @@ class IndexPublishersCommand extends Command
 
         Collection::wrap($qb->execute()->fetchAll())->
             filter(function ($publisher) { return $this->isPublic($publisher); })->
-            //pluck('uid', self::NAME_COLNAME, self::SHORTHAND_COLNAME)//->
             each(function ($publisher) { $this->indexPublisher($publisher); });
 
         return 0;
