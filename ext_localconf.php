@@ -81,6 +81,21 @@ call_user_func(
 		$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
 		
         $iconRegistry->registerIcon(
+            'mpdb_presentation-work',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_work.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-person',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_person.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-item',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_item.svg']
+        );
+        $iconRegistry->registerIcon(
             'mpdb_presentation-plugin-fepublisherdb',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/user_plugin_fepublisherdb.svg']

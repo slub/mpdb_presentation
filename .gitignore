@@ -1,2 +1,7 @@
 Build/dist/*
 Build/node_modules/*
+.idea/
+.Build/
+Build/testing-docker/.env
+composer.lock
+public/
