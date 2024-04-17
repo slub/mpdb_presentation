@@ -11,24 +11,6 @@ use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3_MODE') || die('Access denied.');
 
-ExtensionManagementUtility::addService(
-    'MpdbPresentation',
-    'search',
-    'tx_mpdbpresentation_elasticsearch',
-    [
-        'title' => 'Elasticsearch Service',
-        'description' => 'Provides the frontend with a connection to elasticsearch',
-        'subtype' => '',
-        'available' => true,
-        'priority' => 50,
-        'quality' => 50,
-        'os' => '',
-        'exec' => '',
-        'className' => ElasticSearchService::class,
-    ]
-);
-
-
 call_user_func(
     function()
     {
@@ -94,6 +76,16 @@ call_user_func(
             'mpdb_presentation-item',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_item.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-gnd',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_gnd.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-search',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_search.svg']
         );
         $iconRegistry->registerIcon(
             'mpdb_presentation-plugin-fepublisherdb',
