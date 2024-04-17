@@ -3,9 +3,9 @@ namespace Slub\MpdbPresentation\Controller;
 
 use Illuminate\Support\Collection;
 use Slub\MpdbCore\Controller\AbstractController as CoreAbstractController;
+use Slub\MpdbCore\Services\SearchServiceInterface;
+use Slub\MpdbCore\Services\SearchServiceNotFoundException;
 use Slub\MpdbPresentation\Command\IndexPublishersCommand;
-use Slub\MpdbPresentation\Services\SearchServiceInterface;
-use Slub\MpdbPresentation\Services\SearchServiceNotFoundException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -43,7 +43,6 @@ abstract class AbstractController extends CoreAbstractController
 
     protected Collection $localizedIndices;
     protected Collection $publishers;
-    protected SearchServiceInterface $searchService;
 
     public function initializeShowAction()
     {
@@ -58,20 +57,12 @@ abstract class AbstractController extends CoreAbstractController
     /**
      * @throws SearchServiceNotFoundException
      */
-    protected function initializeAction(): void
+    public function initializeAction(): void
     {
+        parent::initializeAction();
+
         $this->localizedIndices = Collection::wrap(self::INDICES)->
             mapWithKeys(function ($array, $key) { return self::localizeIndex($array, $key); });
-
-        $searchService = GeneralUtility::makeInstanceService('search');
-        if (is_object($searchService)) {
-            $this->searchService = $searchService;
-        } else {
-            throw new SearchServiceNotFoundException();
-        }
-
-        $this->searchService->
-            setSize(self::RESULT_COUNT);
     }
 
     private static function localizeIndex(array $array, string $key): array
