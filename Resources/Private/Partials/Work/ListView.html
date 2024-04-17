@@ -1,37 +1,46 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-    <div class="entity-type">
-        Werk
-    </div>
-    <div class="entity-title">
-        <f:link.action action="show" controller="Work" arguments="{work:entity._source.uid}">
-            {entity._source.full_title}
-        </f:link.action>
-    </div>
-    <div class="entity-body">
-        <div class="entity-supplement">
-            <span class="entity-composer">
-                {entity._source.composers.0.name}
-            </span>
-            <f:if condition="{entity._source.date_of_production}">
-                <span class="entity-date-of-production">
-                    {entity._source.date_of_production -> f:format.date(format:"%Y")}
-                </span>
-            </f:if>
-            <span class="entity-gnd-link">
-                <f:link.external uri="https://d-nb.info/gnd/{entity._id}" target="_blank">
-                    <span class="list-view-id">
-                        {entity._id}
-                    </span>
-                    <span class="list-view-info">
-                        ℹ️
-                    </span>
-                </f:link.external>
-            </span>
+    <div class="entity-left">
+        <div class="entity-type">
+            <core:icon identifier="mpdb_presentation-work" size="large" />
         </div>
-        <div class="entity-preview">
-            <f:for each="{entity._source.published_items}" as="published_item" iteration="i">
-                <span class="entity-preview-title">{published_item.mvdb_id}</span><f:if condition="!{i.isLast}">,</f:if>
-            </f:for>
+    </div>
+    <div class="entity-main">
+        <div class="entity-title">
+            <f:link.action action="show" controller="Work" arguments="{work:entity._source.uid}">
+                {entity._source.full_title}
+            </f:link.action>
+        </div>
+        <div class="entity-body">
+            <div class="entity-supplement">
+                <span class="entity-composer">
+                    {entity._source.composers.0.name}
+                </span>
+                <f:if condition="{entity._source.opus_no}">
+                    <span class="entity-opus-no">
+                        op. {entity._source.opus_no}
+                    </span>
+                </f:if>
+                <f:if condition="{entity._source.date_of_production}">
+                    <span class="entity-date-of-production">
+                        {entity._source.date_of_production -> f:format.date(format:"%Y")}
+                    </span>
+                </f:if>
+                <span class="entity-gnd-link">
+                    <f:link.external uri="https://d-nb.info/gnd/{entity._id}" target="_blank">
+                        <span class="list-view-id">
+                            {entity._id}
+                        </span>
+                        <span class="list-view-info">
+                            <core:icon identifier="mpdb_presentation-gnd"/>
+                        </span>
+                    </f:link.external>
+                </span>
+            </div>
+            <div class="entity-preview">
+                <f:for each="{entity._source.published_items}" as="published_item" iteration="i">
+                    <span class="entity-preview-title">{published_item.mvdb_id}</span><f:if condition="!{i.isLast}">,</f:if>
+                </f:for>
+            </div>
         </div>
     </div>
 </html>
