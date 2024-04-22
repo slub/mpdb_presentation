@@ -60,6 +60,13 @@ abstract class AbstractController extends CoreAbstractController
     public function initializeAction(): void
     {
         parent::initializeAction();
+	    
+        $searchService = GeneralUtility::makeInstanceService('search');
+        if (is_object($searchService)) {
+            $this->searchService = $searchService;
+        } else {
+            throw new SearchServiceNotFoundException();
+        }
 
         $this->localizedIndices = Collection::wrap(self::INDICES)->
             mapWithKeys(function ($array, $key) { return self::localizeIndex($array, $key); });
