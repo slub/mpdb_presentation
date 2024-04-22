@@ -5,14 +5,21 @@
 <f:layout name="Research" />
 
 <f:section name="wrap">
-    <div class="index-picker">
-        <f:render partial="Index/IndexPicker" arguments="{config:config,indices:indices}" />
-    </div>
-    <div class="publisher-picker">
-        <f:render partial="Index/PublisherPicker" arguments="{config:config,publishers:publishers}" />
-    </div>
-    <div class="pagination">
-        <f:render partial="Index/Pagination" arguments="{config:config,totalItems:totalItems,resultCount:resultCount}" />
+    <div class="tools">
+        <div class="pickers">
+            <div class="index-picker">
+                <h1> Ergebnistyp </h1>
+                <f:render partial="Index/IndexPicker" arguments="{config:config,indices:indices}" />
+            </div>
+            <div class="publisher-picker">
+                <h1> Verlag </h1>
+                <f:render partial="Index/PublisherPicker" arguments="{config:config,publishers:publishers}" />
+            </div>
+        </div>
+        <div class="pagination">
+            <h1> Seite </h1>
+            <f:render partial="Index/Pagination" arguments="{config:config,totalItems:totalItems,resultCount:resultCount}" />
+        </div>
     </div>
 </f:section>
 

@@ -20,16 +20,20 @@
             letzte Seite
         </f:link.action>
     </f:if>
-    {firstResult+1} bis
-    <f:if condition="{lastResult}<{totalItems}">
-        <f:then>
-            {lastResult}
-        </f:then>
-        <f:else>
-            {totalItems}
-        </f:else>
-    </f:if>
-    von {totalItems}
+
+    <p>
+        {firstResult+1} bis
+        <f:if condition="{lastResult}<{totalItems}">
+            <f:then>
+                {lastResult}
+            </f:then>
+            <f:else>
+                {totalItems}
+            </f:else>
+        </f:if>
+        von {totalItems} 
+    </p>
+
     <f:if condition="{lastResult}<{totalItems}">
         <f:variable name="from">{firstResult + resultCount}</f:variable>
         <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:from)}</f:variable>
