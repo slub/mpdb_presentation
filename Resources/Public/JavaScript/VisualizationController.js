@@ -9,8 +9,10 @@ let tx_publisherdb_visualizationController = {
         }
 
         const firstTwoCapitals = /\b[A-Z][A-Z]/;
+        console.log(tx_publisherdb_visualizationStatus.data);
         const realisedPublishers = tx_publisherdb_visualizationStatus.data.published_items
-            .map(d => firstTwoCapitals.exec(d.id)[0]);
+            ?.map(d => firstTwoCapitals.exec(d.id)[0]) ??
+            firstTwoCapitals.exec(tx_publisherdb_visualizationStatus.data.id);
         const uniqueRealisedPublishers = [ ... new Set(realisedPublishers) ];
         const publisherMap = uniqueRealisedPublishers
             .map(d => ({ 
