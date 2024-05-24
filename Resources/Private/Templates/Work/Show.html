@@ -15,7 +15,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <f:section name="content">
     <f:flashMessages />
     <p class="data-type">
-        Werkdatensatz
+        <f:translate key="mpdbresearch.work" />
     </p>
     <h1 class="current-item">
         <span id="work-title">
@@ -29,177 +29,150 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </f:if>
     </h1>
     <f:link.action action="show" arguments="{work:work}" id="link-to-current-page" />
+    <div class="clearfix"></div>
 
-    <f:if condition="{work.altTitles}">
-        <div id="alt-titles">
-            <h2> Alternativtitel <small> klicken zum Anzeigen </small> </h2>
-            <p id="alt-titles-raw"> {work.altTitles} </p>
-        </div>
-    </f:if>
-
-    <div class="work-authority-info">
-        <p class="authority-set">
-            Werkdaten nach gemeinsamer Normdatei der DNB
-            <f:if condition="{work.gndId}!='lokal'">
-                <f:then>
+    <div class="entity-wrap">
+        <div class="entity-sidebar">
+            <div class="work-authority-info">
+                <p class="authority-set">
                     <f:link.external target="_blank" uri="https://d-nb.info/{work.gndId}">
-                        GND-ID {work.gndId}
+                        {work.gndId}
+                        <core:icon identifier="mpdb_presentation-gnd"/>
                     </f:link.external>
-                </f:then>
-                <f:else>
-                    <small>
-                        lokaler Werkdatensatz
-                    </small>
-                </f:else>
-            </f:if>
-        </p>
-        <table>
-            <tr>
-                <td>
-                    Normtitel
-                </td>
-                <td>
-                    {work.title}
-                </td>
-            </tr>
-            <f:if condition="{work.titleNo}||{work.titleInstrument}||{work.tonality}">
-                <tr>
-                    <td>
-                        Ergänzende Titelinformationen
-                    </td>
-                    <td>
-                        <f:if condition="{work.titleNo}">
-                            <span id="title-no">
-                                Nummerierung: {work.titleNo}
-                            </span>
-                        </f:if>
-                        <f:if condition="{work.titleInstrument}">
-                            <span id="title-instrument">
-                                Instrument: {work.titleInstrument}
-                            </span>
-                        </f:if>
-                        <f:if condition="{work.tonality}">
-                            <span id="tonality">
-                                Tonart: {work.tonality}
-                            </span>
-                        </f:if>
-                    </td>
-                </tr>
-            </f:if>
-            <tr>
-                <td>
-                    Komponist
-                </td>
-                <td>
-                    <f:if condition="{work.firstcomposer}">
-                        <f:then>
-                            <f:link.action action="show" controller="Person" arguments="{person:work.firstcomposer}">
-                                {work.firstcomposer.name}
-                            </f:link.action>
-                            <f:if condition="{work.firstcomposer.dateOfBirth}">
-                                <span data-tooltip title="*{work.firstcomposer.dateOfBirth->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfBirth}, &#x271D;{work.firstcomposer.dateOfDeath->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfDeath}">
-                                    ({work.firstcomposer.dateOfBirth->f:format.date(format:'Y')}&ndash; 
-                                    {work.firstcomposer.dateOfDeath->f:format.date(format:'Y')})
-                                </span>
-                            </f:if>
-                        </f:then>
-                        <f:else>
-                            <em> Komponist unbekannt </em>
-                        </f:else>
+                </p>
+                <table>
+                    <tr>
+                        <td>
+                            <f:translate key="LLL:EXT:dmnorm/Resources\Private\Language\locallang_csh_work:genericTitle" />
+                        </td>
+                        <td>
+                            {work.genericTitle}
+                        </td>
+                    </tr>
+                    <f:if condition="{work.altTitles}">
+                        <tr>
+                            <td>
+                                <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:altTitles" />
+                            </td>
+                            <td>
+                                {work.altTitles}
+                            </td>
+                        </tr>
                     </f:if>
-                </td>
-            </tr>
-            <f:if condition="{work.dateOfProduction}">
-                <tr>
-                    <td>
-                        Produktionsjahr
-                    </td>
-                    <td>
-                        {work.dateOfProduction->f:format.date(format:'Y')}
-                    </td>
-                </tr>
-            </f:if>
-            <f:if condition="{work.geographicAreaCode}">
-                <tr>
-                    <td>
-                        geografischer Code
-                    </td>
-                    <td>
-                        {work.geographicAreaCode}
-                    </td>
-                </tr>
-            </f:if >
-            <f:if condition="{work.form}">
-                <tr>
-                    <td>
-                        Gattung
-                    </td>
-                    <td>
-                        <f:for each="{work.form}" as="form">
-                            <span class="comma">
-                                {form.name}
-                            </span>
-                        </f:for>
-                    </td>
-                </tr>
-            </f:if>
-            <f:if condition="{work.instruments}">
-                <tr>
-                    <td>
-                        Instrumentierung
-                    </td>
-                    <td>
-                        <f:for each="{work.instruments}" as="instrument">
-                            <span class="comma">
-                                {instrument.name}
-                            </span>
-                        </f:for>
-                    </td>
-                </tr>
-            </f:if>
-        </table>
-        <!--
-        <p class="info">
-            Die mvdb hat keinen Einfluss auf die aus der GND entnommenen Informationen.
-        </p>
-        -->
-    </div>
-
-    <h2> Wirtschaftsdaten </h2>
-
-    <div id="graphics">
-        <h3> Grafische Darstellung <small> Klicken zum Ausblenden </small> </h3>
-        <div id="help-text">
-            <h3> Hilfe zur Grafik <small> Klicken zum Anzeigen </small> </h3>
-            <div>
-                <p>
-                    Die Matrixdarstellung schlüsselt auf, in welchen Verlagsartikeln (also: Ausgaben) ein Werk in der mvdb erfasst ist.
-                    Die Listen sind hierarchisiert geordnet zuerst nach Verlagskürzel, dann nach Verlagsartikel und schließlich nach den darin enthaltenen Teilartikeln.
-                    Das ist an den Stammbaum-Strukturen ablesbar.
-                </p>
-                <p>
-                    An den Punkten in den senkrechten Spalten lässt sich die jeweilige Ausgabeform ablesen:
-                    Jeder Zeile entspricht genau eine Spalte.
-                    Die Gesamtauflage des Verlagsartikels ist dann im Balken rechts summiert.
-                </p>
-                <p>
-                    Unterhalb der Matrix werden die Häufigkeiten der verschiedenen Ausgabeformen im Querschnitt der Verlagsartikel summiert.
-                </p>
-                <p>
-                    Datumsspannen und genaue Mengeangaben werden angezeigt, wenn man mit dem Mauszeiger über die Punkte und Balken fährt
-                </p>
+                    <f:if condition="{work.titleNo}||{work.titleInstrument}||{work.tonality}">
+                        <tr>
+                            <td>
+                                <f:translate key="mpdbresearch.supplementingTitleInfo" />
+                            </td>
+                            <td>
+                                <f:if condition="{work.titleNo}">
+                                    <span id="title-no">
+                                        <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:titleNo" />:
+                                        {work.titleNo}
+                                    </span>
+                                </f:if>
+                                <f:if condition="{work.titleInstrument}">
+                                    <span id="title-instrument">
+                                        <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:titleInstrument" />:
+                                        {work.titleInstrument}
+                                    </span>
+                                </f:if>
+                                <f:if condition="{work.tonality}">
+                                    <span id="tonality">
+                                        <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:tonality" />:
+                                        {work.tonality}
+                                    </span>
+                                </f:if>
+                            </td>
+                        </tr>
+                    </f:if>
+                    <tr>
+                        <td>
+                            <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:firstComposer" />
+                        </td>
+                        <td>
+                            <f:if condition="{work.firstcomposer}">
+                                <f:then>
+                                    <f:link.action action="show" controller="Person" arguments="{person:work.firstcomposer}">
+                                        {work.firstcomposer.name}
+                                    </f:link.action>
+                                    <f:if condition="{work.firstcomposer.dateOfBirth}">
+                                        <span data-tooltip title="*{work.firstcomposer.dateOfBirth->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfBirth}, &#x271D;{work.firstcomposer.dateOfDeath->f:format.date(format:'d.m.Y')}, {work.firstcomposer.placeOfDeath}">
+                                            ({work.firstcomposer.dateOfBirth->f:format.date(format:'Y')}&ndash; 
+                                            {work.firstcomposer.dateOfDeath->f:format.date(format:'Y')})
+                                        </span>
+                                    </f:if>
+                                </f:then>
+                                <f:else>
+                                    <em>
+                                        <f:translate key="mpdbpresentation.unknown" />
+                                    </em>
+                                </f:else>
+                            </f:if>
+                        </td>
+                    </tr>
+                    <f:if condition="{work.dateOfProduction}">
+                        <tr>
+                            <td>
+                                <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:dateOfProduction" />:
+                            </td>
+                            <td>
+                                {work.dateOfProduction->f:format.date(format:'Y')}
+                            </td>
+                        </tr>
+                    </f:if>
+                    <f:if condition="{work.geographicAreaCode}">
+                        <tr>
+                            <td>
+                                <f:translate key="geographicAreaCode" extensionName="DmNorm" />
+                            </td>
+                            <td>
+                                {work.geographicAreaCode}
+                            </td>
+                        </tr>
+                    </f:if >
+                    <f:if condition="{work.form}">
+                        <tr>
+                            <td>
+                                <f:translate key="genre" extensionName="DmNorm" />
+                            </td>
+                            <td>
+                                <f:for each="{work.form}" as="form">
+                                    <span class="comma">
+                                        {form.name}
+                                    </span>
+                                </f:for>
+                            </td>
+                        </tr>
+                    </f:if>
+                    <f:if condition="{work.instruments}">
+                        <tr>
+                            <td>
+                                <f:translate key="mediumOfPerformance" extensionName="DmNorm" />
+                            </td>
+                            <td>
+                                <f:for each="{work.instruments}" as="instrument">
+                                    <span class="comma">
+                                        {instrument.name}
+                                    </span>
+                                </f:for>
+                            </td>
+                        </tr>
+                    </f:if>
+                </table>
             </div>
         </div>
-        <div id="{graphTarget}"> </div>
-    </div>
-    <div id="{dashboardTarget}"></div>
-    <div id="table">
-        <h3> Tabellen <small> Klicken zum Ausblenden </small> </h3>
-        <div id="{tableTarget}"> </div>
+        <div class="graph-container">
+            <div id="{graphTarget}"> </div>
+            <div id="{dashboardTarget}"></div>
+            <div id="{tableTarget}"> </div>
+        </div>
     </div>
 
     <f:if condition="{subWorks}">
-        <h3> Teilwerke </h3>
+        <h3>
+            <f:translate key="mpdbresearch.partialWorks" />
+        </h3>
         <ul>
             <f:for each="{subWorks}" as="subWork">
                 <li> 
@@ -210,18 +183,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
                     <f:if condition="{subWork.subWork.indexNo}">
                         <small> {subWork.subWork.indexNo} </small>
                     </f:if>
-                    <f:if condition="{subWork.subWork.gndId}!='lokal'">
-                        <f:then>
-                            <f:link.external uri="https://d-nb.info/{work.gndId}" target="_blank">
-                                ({subWork.subWork.gndId})
-                            </f:link.external>
-                        </f:then>
-                        <f:else>
-                            <em> (lokaler Datensatz) </em>
-                        </f:else>
-                    </f:if>
+                    <f:link.external uri="https://d-nb.info/{work.gndId}" target="_blank">
+                        ({subWork.subWork.gndId})
+                    </f:link.external>
                     <f:if condition="{subWork.makros}">
-                        gedruckt in:
+                        <f:translate key="mpdbresearch.printedIn" />
                         <f:for each="{subWork.makros}" as="makro">
                             <f:link.action action="show" controller="PublisherMakroItem" arguments="{publisherMakroItem:makro}">
                                 {makro.mvdbId}: {makro.title}
@@ -233,24 +199,10 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </ul>
     </f:if>
 
-    <div class="subworks">
-        <f:for each="{subWorks}" as="subWork">
-            <div class="subwork">
-                <div class="title">
-                    {subWork.subWork.title} {subWork.subWork.titleNo}
-                </div>
-                <div class="gndId">
-                    {subWork.subWork.gndId}
-                </div>
-                <div class="submakromikros">
-                    <f:render partial="Work/WorkStructure" arguments="{publisherMikroItems:subWork.mikros,publisherActions:publisherActions}" />
-                </div>
-            </div>
-        </f:for>
-    </div>
-
 	<f:if condition="!{subWorks}||{publisherMakroItems}">
-		<h3> Gedruckt in </h3>
+        <h3>
+            <f:translate key="mpdbresearch.printedIn" />
+        </h3>
 
 		<f:if condition="{publisherMakroItems}">
 			<f:then>
@@ -265,7 +217,9 @@ Otherwise your changes will be overwritten the next time you save the extension 
 				</ul>
 			</f:then>
 			<f:else>
-				<em> Das Werk ist in keinem Verlagsartikel in der mvdb gedruckt worden. </em>
+				<em>
+                    <f:translate key="mpdbresearch.workNotPrinted" />
+                </em>
 			</f:else>
 		</f:if>
 	</f:if>

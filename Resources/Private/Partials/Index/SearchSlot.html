@@ -4,7 +4,7 @@
 
     <f:form action="search" controller="Index" class="form-inline">
         <div class="input-group">
-            <f:form.textfield name="config[searchTerm]" class="input-group-field" value="{config.searchTerm}" placeholder="Suchen" id="main-search" />
+            <f:form.textfield name="config[searchTerm]" class="input-group-field" value="{config.searchTerm}" placeholder="{f:translate(key:'mpdbresearch.search')}" id="main-search" />
             <div class="input-group-button">
                 <f:form.button class="hollow button" id="search-button">
                     <core:icon identifier="mpdb_presentation-search" size="large"/>

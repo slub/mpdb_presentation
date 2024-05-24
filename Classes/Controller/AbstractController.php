@@ -18,30 +18,17 @@ abstract class AbstractController extends CoreAbstractController
     const DASHBOARD_TARGET = 'tx_mpdbpresentation_dashboard';
     const RESULT_COUNT = 25;
     const INDICES = [ 
-        'person' => [ 
-            'symbol' => '🧍',
-            'controller' => 'Person' 
-        ], 
-        'work' => [ 
-            'symbol' => '📄',
-            'controller' => 'Work' 
-        ],
-        'published_item' => [ 
-            'symbol' => '📕',
-            'controller' => 'PublishedItem' 
-        ],
-        'instrument' => [ 
-            'symbol' => '🎺',
-            'controller' => 'Instrument' 
-        ],
-        'genre' => [ 
-            'symbol' => '🎶',
-            'controller' => 'Genre' 
-        ]
+        'person' => [
+            'controller' => 'Person',
+            'translation' => 'person' ],
+        'work' => [
+            'controller' => 'Work',
+            'translation' => 'work' ],
+        'published_item' => [
+            'controller' => 'PublishedItem',
+            'translation' => 'publishedItem' ]
     ];
-    const EXT_NAME = 'MpdbPresentation';
 
-    protected Collection $localizedIndices;
     protected Collection $publishers;
 
     public function initializeShowAction()
@@ -52,26 +39,6 @@ abstract class AbstractController extends CoreAbstractController
             setIndex(IndexPublishersCommand::INDEX_NAME)->
             search()->
             pluck('_source');
-    }
-
-    /**
-     * @throws SearchServiceNotFoundException
-     */
-    public function initializeAction(): void
-    {
-        parent::initializeAction();
-
-        $this->localizedIndices = Collection::wrap(self::INDICES)->
-            mapWithKeys(function ($array, $key) { return self::localizeIndex($array, $key); });
-    }
-
-    private static function localizeIndex(array $array, string $key): array
-    {
-		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
-        $body = $array;
-        $translation = LocalizationUtility::translate($key, self::EXT_NAME);
-        $body['translation'] = ucwords($translation);
-        return [ $key => $body ];
     }
 
     protected function getJsCall(Collection $data, Collection $publishers = null, string $title): string

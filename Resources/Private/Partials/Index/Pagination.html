@@ -17,12 +17,13 @@
         <f:variable name="from">{firstResult - resultCount}</f:variable>
         <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:from)}</f:variable>
         <f:link.action action="search" arguments="{config:searchconfig}">
-            letzte Seite
+            <f:translate key="mpdbresearch.previousPage" />
         </f:link.action>
     </f:if>
 
     <p>
-        {firstResult+1} bis
+        {firstResult+1}
+        <f:translate key="mpdbresearch.to" />
         <f:if condition="{lastResult}<{totalItems}">
             <f:then>
                 {lastResult}
@@ -31,14 +32,15 @@
                 {totalItems}
             </f:else>
         </f:if>
-        von {totalItems} 
+        <f:translate key="mpdbresearch.of" />
+        {totalItems} 
     </p>
 
     <f:if condition="{lastResult}<{totalItems}">
         <f:variable name="from">{firstResult + resultCount}</f:variable>
         <f:variable name="searchconfig">{mpdbpres:setConfig(config:config,key:'from',value:from)}</f:variable>
         <f:link.action action="search" arguments="{config:searchconfig}">
-            nächste Seite
+            <f:translate key="mpdbresearch.nextPage" />
         </f:link.action>
     </f:if>
 </html>
