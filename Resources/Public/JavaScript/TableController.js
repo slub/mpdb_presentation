@@ -18,7 +18,6 @@ const tx_publisherdb_tableController = {
             asc: true
         };
         this.render();
-        //this.registerEvents();
         this.colorSortButtons();
     },
 
@@ -72,12 +71,20 @@ const tx_publisherdb_tableController = {
         const tableHead = table.append('thead');
         const headRow = tableHead.append('tr');
 
-        headRow.append('th')
+        const yearHead = headRow.append('th');
+        yearHead
             .attr('scope', 'col')
             .attr('class', tx_publisherdb_tableSort)
             .attr('id', tx_publisherdb_tableYear)
-            .attr('class', 'text-right')
-            .html(createSortButton(`${tx_publisherdb_tableSortItem}-year`) + 'Jahr');
+            .attr('class', 'text-right');
+
+        if (tx_publisherdb_visualizationStatus.singlePrint) {
+            yearHead.html('Jahr');
+        } else {
+            yearHead.html(createSortButton(`${tx_publisherdb_tableSortItem}-year`) + ' Jahr');
+        }
+        console.log(tx_publisherdb_tableYear);
+
         headRow.selectAll(`th.${tx_publisherdb_tableYear}`)
             .data(tx_publisherdb_visualizationStatus.subitemIds)
             .join('th')
@@ -85,10 +92,17 @@ const tx_publisherdb_tableController = {
             .attr('class', tx_publisherdb_tableYear)
             .attr('id', d => d)
             .attr('class', 'text-right')
-            .html(
-                d => createSortButton(`${tx_publisherdb_tableSortItem}-${d}`) +
-                createExcludeItemButton(`${tx_publisherdb_tableExcludeItem}-${d}`) + d
-            );
+            .html(d => tx_publisherdb_visualizationStatus.singleItem ? d : createSortButton(`${tx_publisherdb_tableSortItem}-${d}`) +
+                createExcludeItemButton(`${tx_publisherdb_tableExcludeItem}-${d}`) + d);
+
+
+        if (tx_publisherdb_visualizationStatus.singlePrint) {
+            headRow.selectAll(`th.${tx_publisherdb_tableYear}`).html(d => d);
+        } else {
+            headRow.selectAll(`th.${tx_publisherdb_tableYear}`).html(d => createSortButton(`${tx_publisherdb_tableSortItem}-${d}`) +
+                createExcludeItemButton(`${tx_publisherdb_tableExcludeItem}-${d}`) + d);
+        }
+
         if (!tx_publisherdb_visualizationStatus.singleItem) {
             headRow.append('th')
                 .attr('scope', 'col')
@@ -106,7 +120,7 @@ const tx_publisherdb_tableController = {
             .attr('class', tx_publisherdb_tableRow)
             .attr('scope', 'row')
             .attr('class', 'text-right')
-            .html(d => createExcludeYearButton(`${tx_publisherdb_tableExcludeYear}-${d.year}`) + d.year);
+            .html(d => /*createExcludeYearButton(`${tx_publisherdb_tableExcludeYear}-${d.year}`) +*/ d.year);
         bodyRows.selectAll(`td.${tx_publisherdb_tableData}`)
             .data(d => d.items)
             .join('td')
@@ -121,7 +135,12 @@ const tx_publisherdb_tableController = {
                 .html(d => formatNumber(d.total));
         }
 
-        if (tx_publisherdb_visualizationStatus._config.cumulativity != tx_publisherdb_cumulativity.CUMULATIVE && !tx_publisherdb_visualizationStatus.singleYear) {
+        if (
+            tx_publisherdb_visualizationStatus._config.cumulativity != 
+            tx_publisherdb_cumulativity.CUMULATIVE && 
+            !tx_publisherdb_visualizationStatus.singleYear &&
+            !tx_publisherdb_visualizationStatus.singlePrint
+        ) {
             const tableFoot = table.append('tfoot');
             const footRow = tableFoot.append('tr');
             footRow.append('th')
