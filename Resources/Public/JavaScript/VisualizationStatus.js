@@ -28,6 +28,7 @@ let tx_publisherdb_visualizationStatus = {
     _publishers: [],
     singleItem: false,
     singleYear: false,
+    singlePrint: false,
     _years: [],
     _subitemIds: [],
 
@@ -92,18 +93,6 @@ let tx_publisherdb_visualizationStatus = {
         return this._publishers;
     },
 
-    /*
-    set granularity (granularity) {
-        this._granularity = granularity;
-        this.updateView();
-    },
-
-    set cumulativity (cumulativity) {
-        this._cumulativity = cumulativity;
-        this.updateView();
-    },
-    */
-
     set excludedYears (excludedYears) {
         this._excludedYears = excludedYears;
         this.updateView();
@@ -122,6 +111,14 @@ let tx_publisherdb_visualizationStatus = {
     set data (data) {
         this._isPublishedItem = data.published_subitems ? true : false;
         this._data = data;
+
+        if (
+            this._data.published_subitems.length == 1 && 
+            this._data.published_subitems[0].prints_per_year.length == 1
+        ) {
+            this.singlePrint = true;
+        }
+
         this.updateView();
     },
 
@@ -218,7 +215,7 @@ let tx_publisherdb_visualizationStatus = {
                 return targetData.map(print => print.date);
             })
             .flat();
-        this.years = d3.range(d3.min(years), d3.max(years))
+        this.years = d3.range(+d3.min(years), +d3.max(years) + 1)
             .filter(year => !this.excludedYears.includes(year));
 
         const yearData = this.years.map(year => ({

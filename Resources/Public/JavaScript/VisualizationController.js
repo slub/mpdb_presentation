@@ -9,7 +9,6 @@ let tx_publisherdb_visualizationController = {
         }
 
         const firstTwoCapitals = /\b[A-Z][A-Z]/;
-        console.log(tx_publisherdb_visualizationStatus.data);
         const realisedPublishers = tx_publisherdb_visualizationStatus.data.published_items
             ?.map(d => firstTwoCapitals.exec(d.id)[0]) ??
             firstTwoCapitals.exec(tx_publisherdb_visualizationStatus.data.id);
@@ -34,8 +33,10 @@ let tx_publisherdb_visualizationController = {
             reduce( (a, b) => a < b ? a : b );
 
         tx_publisherdb_tableController.target = config.tableTarget;
-        tx_publisherdb_dashboardController.target = config.dashboardTarget;
-        tx_publisherdb_graphController.target = config.graphTarget;
+        if (!tx_publisherdb_visualizationStatus.singlePrint){
+            tx_publisherdb_dashboardController.target = config.dashboardTarget;
+            tx_publisherdb_graphController.target = config.graphTarget;
+        }
 
         tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_tableController);
         tx_publisherdb_visualizationStatus.registerView(tx_publisherdb_dashboardController);
