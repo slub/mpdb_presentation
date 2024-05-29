@@ -5,7 +5,7 @@
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:key)}</f:variable>
             <li>
                 <f:link.action action="search" arguments="{config:searchconfig}">
-                    {index.translation}
+                    <f:translate key="mpdbresearch.{index.translation}" />
                 </f:link.action>
             </li>
         </f:for>

@@ -25,7 +25,7 @@ class IndexController extends AbstractController
 
         $this->view->assign('entities', $entities->all());
         $this->view->assign('config', $config);
-        $this->view->assign('indices', $this->localizedIndices->all());
+        $this->view->assign('indices', self::INDICES);
         $this->view->assign('totalItems', $totalItems);
         $this->view->assign('publishers', $publishers->all());
         $this->view->assign('resultCount', self::RESULT_COUNT);

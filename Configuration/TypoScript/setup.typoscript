@@ -72,7 +72,4 @@ page {
 		subitemController = EXT:mpdb_presentation/Resources/Public/JavaScript/SubitemController.js
 		graphController = EXT:mpdb_presentation/Resources/Public/JavaScript/GraphController.js
     }
-    includeCSS {
-        mpdb_presentation_styles = EXT:mpdb_presentation/Resources/Public/Css/layout.css
-    }
 }

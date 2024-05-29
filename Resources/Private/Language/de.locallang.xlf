@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="EXT:publisher_db/Resources/Private/Language/locallang" date="2022-12-19T13:20:31Z" product-name="publisher_db">
+		<header/>
+		<body>
+			<trans-unit id="mpdbresearch.nextPage">
+				<source>next page</source>
+				<target>nächste Seite</target>
+			</trans-unit>
+			<trans-unit id="mpdbresearch.previousPage">
+				<source>previous page</source>
+				<target>vorherige Seite</target>
+			</trans-unit>
+            <trans-unit id="mpdbresearch.to" resname="mpdbresearch.to">
+                <source>to</source>
+                <target>bis</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.of" resname="mpdbresearch.of">
+                <source>of</source>
+                <target>von</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.resultType" resname="mpdbresearch.resultType">
+                <source>result type</source>
+                <target>Ergebnistyp</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.publisher" resname="mpdbresearch.publisher">
+                <source>publisher</source>
+                <target>Verlag</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.page" resname="mpdbresearch.page">
+                <source>page</source>
+                <target>Seite</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.noResults" resname="mpdbresearch.noResults">
+                <source>no results found</source>
+                <target>keine Ergebnisse gefunden</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.search" resname="mpdbresearch.search">
+                <source>Search</source>
+                <target>Suchen</target>
+            </trans-unit>
+			<trans-unit id="start_title" resname="tx_publisherdb_domain_model_publishermikroitem">
+				<source>Music Publisher Database Entry</source>
+				<target>Musikverlagsdatenbank Einstieg</target>
+			</trans-unit>
+			<trans-unit id="start_description" resname="tx_publisherdb_domain_model_publishermikroitem">
+				<source>The research plugin of the Music Publisher Database.</source>
+				<target>Das Rechercheplugin der Musikverlagsdatenbank.</target>
+			</trans-unit>
+            <trans-unit id="mpdbresearch.person">
+                <source>Person</source>
+                <target>Person</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.work">
+                <source>Work</source>
+                <target>Werk</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.publishedItem">
+                <source>Published Item</source>
+                <target>Verlagsartikel</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.gndDisclaimer">
+                <source>These data are retrieved from the Integrated Authority File (Gemeinsame Normdatei).</source>
+                <target>Diese Daten stammen aus der Gemeinsamen Normdatei (GND).</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.lifeData">
+                <source>Life data</source>
+                <target>Lebensdaten</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.supplementingTitleInfo">
+                <source>supplementary title information</source>
+                <target>Ergänzende Titelinformationen</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.printedIn">
+                <source>printed in</source>
+                <target>gedruckt in</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.partialWorks">
+                <source>partial works</source>
+                <target>Teilwerke</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.workNotPrinted">
+                <source>There are no prints of this work recorded in the database.</source>
+                <target>Von diesem Werk sind keine Drucke in der Datenbank aufgezeichnet.</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.noWorksFound">
+                <source>No works by %s have been found.</source>
+                <target>Es wurden keine Werke von %s gefunden.</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.publishedBy">
+                <source>published by %s</source>
+                <target>verlegt von %s</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.worksBy">
+                <source>Works by %s in the Music Publisher Database</source>
+                <target>Werke von %s in der Musikverlagsdatenbank</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.unknown">
+                <source>unknown</source>
+                <target>unbekannt</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.typeTooltip">
+                <source>
+                    We differentiate prints of single works, versions and collections.
+                    Collections are classified as explored, if all contained work have been reconstructed.
+                    They are classified as partially explored, if only some contained works have been reconstructed, and as unexplored otherwise.
+                    Apart from that we differentiate some educational and theoretical works.
+                </source>
+                <target>
+                    In der mvdb wird zwischen Drucken von Einzelwerken, Variationen bzw. Bearbeitungen und Sammlungen unterschieden.
+                    Sammlungen werden als erschlossen bezeichnet, falls alle enthaltenen Werke rekonstruiert werden, als teilerschlossen, falls nur einige enthaltene Werke bekannt sind, und andernfalls als unerschlossen.
+                    Daneben werden vereinzelt Schulwerke und theoretische Werke erfasst.
+                </target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.containedWork">
+                <source>contained work</source>
+                <target>enthaltenes Werk</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.containedWorks">
+                <source>contained works</source>
+                <target>enthaltene Werke</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.editedWork">
+                <source>edited work</source>
+                <target>bearbeitetes Werk</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.editedWork">
+                <source>No workdata could be found for this item.</source>
+                <target>Für diesen Verlagsartikel konnten keine Werkdaten erschlossen werden.</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.for">
+                <source>for</source>
+                <target>für</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.noWorkData">
+                <source>No work data could be found for this published item.</source>
+                <target>Für diesen Verlagsartikel konnten keine Werkdaten erschlossen werden.</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.economicData">
+                <source>Economic data</source>
+                <target>Wirtschaftsdaten</target>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>
