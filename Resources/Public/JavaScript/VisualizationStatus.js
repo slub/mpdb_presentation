@@ -113,6 +113,7 @@ let tx_publisherdb_visualizationStatus = {
         this._data = data;
 
         if (
+            this._data.published_subitems &&
             this._data.published_subitems.length == 1 && 
             this._data.published_subitems[0].prints_per_year.length == 1
         ) {
