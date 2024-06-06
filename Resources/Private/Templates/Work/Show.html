@@ -49,15 +49,17 @@ Otherwise your changes will be overwritten the next time you save the extension 
                             {work.genericTitle}
                         </td>
                     </tr>
-                    <f:if condition="{work.altTitles}">
-                        <tr>
-                            <td>
-                                <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:altTitles" />
-                            </td>
-                            <td>
-                                {work.altTitles}
-                            </td>
-                        </tr>
+                    <f:if condition="{altTitles}">
+                        <f:for each="{altTitles}" as="title">
+                            <tr>
+                                <td>
+                                    <f:translate key="LLL:EXT:dmnorm/Resources/Private/Language/locallang_csh_work:altTitles" />
+                                </td>
+                                <td>
+                                    {title}
+                                </td>
+                            </tr>
+                        </f:for>
                     </f:if>
                     <f:if condition="{work.titleNo}||{work.titleInstrument}||{work.tonality}">
                         <tr>
