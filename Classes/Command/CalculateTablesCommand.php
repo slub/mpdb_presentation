@@ -1,6 +1,6 @@
 <?php
 
-namespace SLUB\MpdbPresentation\Command;
+namespace Slub\MpdbPresentation\Command;
 
 use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Collection;
