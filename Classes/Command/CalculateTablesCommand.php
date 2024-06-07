@@ -310,7 +310,7 @@ class CalculateTablesCommand extends Command
     {
         $publishedSubitems = Collection::wrap($publishedItem['_source']['published_subitems'])->
             map(function ($item) { return self::samplePublishedSubitemData($item); })->
-            toArray();
+            all();
 
         return [ 
             $publishedItem['_id'] =>
@@ -356,10 +356,10 @@ class CalculateTablesCommand extends Command
 
         $result = [ 
             'id' => $publishedSubitem['mvdb_id'],
-            'prints_by_date' => $printsByDate->toArray(),
-            'prints_per_year' => $printsPerYear->toArray(),
-            'prints_by_date_cumulative' => $printsByDateCumulative->toArray(),
-            'prints_per_year_cumulative' => $printsPerYearCumulative->toArray()
+            'prints_by_date' => $printsByDate->values(),
+            'prints_per_year' => $printsPerYear->values(),
+            'prints_by_date_cumulative' => $printsByDateCumulative->values(),
+            'prints_per_year_cumulative' => $printsPerYearCumulative->values()
         ];
 
         foreach(explode(',', $extConf['movingAverages']) as $years) {
