@@ -32,6 +32,11 @@ let tx_publisherdb_visualizationStatus = {
     _years: [],
     _subitemIds: [],
 
+    sorting: {
+        by: 'year',
+        asc: true
+    },
+
     set subitemIds (subitemIds) {
         this._subitemIds = subitemIds;
         if (this._subitemIds.length == 1) {
@@ -72,6 +77,8 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     set config (config) {
+        console.log(this);
+        console.log(this.sorting);
         this._config = config;
         this.updateView();
     },
@@ -255,5 +262,30 @@ let tx_publisherdb_visualizationStatus = {
 
     registerView: function (view) {
         this._views.push(view);
+    },
+
+    sort(a, b) {
+        if (tx_publisherdb_visualizationStatus.sorting.by == 'year') {
+            return tx_publisherdb_visualizationStatus.sorting.asc ?
+                a.year - b.year : b.year - a.year;
+        } else if (tx_publisherdb_visualizationStatus.sorting.by == 'total') {
+            const totalA = a.items.map(item => item.quantity).reduce((c, d) => c + d);
+            const totalB = b.items.map(item => item.quantity).reduce((c, d) => c + d);
+            const quantityDiff = tx_publisherdb_visualizationStatus.sorting.asc ?
+                totalA - totalB : totalB - totalA;
+            if (quantityDiff) {
+                return quantityDiff;
+            }
+            return a.year - b.year;
+        } else {
+            const quantityA = a.items.filter(item => item.id == tx_publisherdb_visualizationStatus.sorting.by)[0]['quantity'];
+            const quantityB = b.items.filter(item => item.id == tx_publisherdb_visualizationStatus.sorting.by)[0]['quantity'];
+            const quantityDiff = tx_publisherdb_visualizationStatus.sorting.asc ?
+                quantityA - quantityB : quantityB - quantityA;
+            if (quantityDiff) {
+                return quantityDiff;
+            }
+            return a.year - b.year;
+        }
     }
 }

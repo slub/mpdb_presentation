@@ -13,47 +13,19 @@ const tx_publisherdb_tableController = {
 
     set target(target) {
         this._target = target;
-        this._sorting = {
-            by: 'year',
-            asc: true
-        };
         this.render();
         this.colorSortButtons();
     },
 
-    sort(a, b) {
-        if (tx_publisherdb_tableController._sorting.by == 'year') {
-            return tx_publisherdb_tableController._sorting.asc ?
-                a.year - b.year : b.year - a.year;
-        } else if (tx_publisherdb_tableController._sorting.by == 'total') {
-            const totalA = a.items.reduce((a, b) => a.quantity + b.quantity);
-            const totalB = b.items.reduce((a, b) => a.quantity + b.quantity);
-            const quantityDiff = tx_publisherdb_tableController._sorting.asc ?
-                totalA - totalB : totalB - totalA;
-            if (quantityDiff) {
-                return quantityDiff;
-            }
-            return a.year - b.year;
-        } else {
-            const quantityA = a.items.filter(item => item.id == tx_publisherdb_tableController._sorting.by)[0]['quantity'];
-            const quantityB = b.items.filter(item => item.id == tx_publisherdb_tableController._sorting.by)[0]['quantity'];
-            const quantityDiff = tx_publisherdb_tableController._sorting.asc ?
-                quantityA - quantityB : quantityB - quantityA;
-            if (quantityDiff) {
-                return quantityDiff;
-            }
-            return a.year - b.year;
-        }
-    },
-
     colorSortButtons() {
-        const ascSelector = this._sorting.asc ? 'asc' : 'desc';
-        const sortSelector = `${tx_publisherdb_tableSortItem}-${this._sorting.by}`;
+        const ascSelector = tx_publisherdb_visualizationStatus.sorting.asc ? 'asc' : 'desc';
+        const sortSelector = `${tx_publisherdb_tableSortItem}-${tx_publisherdb_visualizationStatus.sorting.by}`;
         d3.selectAll('a.sort-btn span').style('color', '');
         d3.selectAll(`a.sort-btn#${sortSelector} span.${ascSelector}`).style('color', 'black');
     },
 
     render() {
+        // set formatters
         const formatNumber = x => Intl.NumberFormat('de-DE').format(x);
         const createButton = (cl, label) => id => `<a id="${id}" class="${cl} m-1"> ${label} </a>`;
         const createSortButton = tx_publisherdb_visualizationStatus._config.cumulativity == tx_publisherdb_cumulativity.CUMULATIVE ?
@@ -61,9 +33,12 @@ const tx_publisherdb_tableController = {
             createButton('sort-btn', '<span class="desc">↑</span><span class="asc">↓</span>');
         const createExcludeYearButton = tx_publisherdb_visualizationStatus.singleYear ? _ => '' : createButton('exclude-btn', 'x');
         const createExcludeItemButton = tx_publisherdb_visualizationStatus.singleItem ? _ => '' : createButton('exclude-btn', 'x');
+
+        // init
         const target = d3.select(`#${this._target}`);
         target.html('');
 
+        // create table and header
         const table = target.append('table')
             .attr('class', 'table')
             .attr('class', tx_publisherdb_tableClass);
@@ -83,7 +58,6 @@ const tx_publisherdb_tableController = {
         } else {
             yearHead.html(createSortButton(`${tx_publisherdb_tableSortItem}-year`) + ' Jahr');
         }
-        console.log(tx_publisherdb_tableYear);
 
         headRow.selectAll(`th.${tx_publisherdb_tableYear}`)
             .data(tx_publisherdb_visualizationStatus.subitemIds)
@@ -112,6 +86,7 @@ const tx_publisherdb_tableController = {
                 .html(createSortButton(`${tx_publisherdb_tableSortItem}-total`) + 'Total');
         }
 
+        // create body
         const tableBody = table.append('tbody');
         const bodyRows = tableBody.selectAll('tr')
             .data(tx_publisherdb_visualizationStatus.summedYearData)
@@ -172,16 +147,17 @@ const tx_publisherdb_tableController = {
     registerEvents() {
         $('a.sort-btn').click( e => {
             const id = e.currentTarget.id.replace(`${tx_publisherdb_tableSortItem}-`, '');
-            if (this._sorting.by == id) {
-                this._sorting.asc = !this._sorting.asc;
+            if (tx_publisherdb_visualizationStatus.sorting.by == id) {
+                tx_publisherdb_visualizationStatus.sorting.asc = !tx_publisherdb_visualizationStatus.sorting.asc;
             } else {
-                this._sorting.by = id;
+                tx_publisherdb_visualizationStatus.sorting.by = id;
                 if (id == 'year') {
-                    this._sorting.asc = true;
+                    tx_publisherdb_visualizationStatus.sorting.asc = true;
                 } else {
-                    this._sorting.asc = false;
+                    tx_publisherdb_visualizationStatus.sorting.asc = false;
                 }
             }
+            tx_publisherdb_visualizationStatus.updateData();
             this.render();
             this.colorSortButtons();
         });
