@@ -27,6 +27,7 @@ const tx_publisherdb_tableController = {
     render() {
         // set formatters
         const formatNumber = x => Intl.NumberFormat('de-DE').format(x);
+        const formatDate = x => d3.timeFormat('%d.%m.%Y')(d3.isoParse(x));
         const createButton = (cl, label) => id => `<a id="${id}" class="${cl} m-1"> ${label} </a>`;
         const createSortButton = tx_publisherdb_visualizationStatus._config.cumulativity == tx_publisherdb_cumulativity.CUMULATIVE ?
             _ => '' :
@@ -77,7 +78,10 @@ const tx_publisherdb_tableController = {
                 createExcludeItemButton(`${tx_publisherdb_tableExcludeItem}-${d}`) + d);
         }
 
-        if (!tx_publisherdb_visualizationStatus.singleItem) {
+        if (
+            !tx_publisherdb_visualizationStatus.singleItem &&
+            tx_publisherdb_visualizationStatus.targetData != 'prints_by_date'
+        ) {
             headRow.append('th')
                 .attr('scope', 'col')
                 .attr('class', tx_publisherdb_tableSort)
@@ -88,26 +92,36 @@ const tx_publisherdb_tableController = {
 
         // create body
         const tableBody = table.append('tbody');
+
         const bodyRows = tableBody.selectAll('tr')
-            .data(tx_publisherdb_visualizationStatus.summedYearData)
+            .data(
+                tx_publisherdb_visualizationStatus.targetData == 'prints_by_date' ?
+                tx_publisherdb_visualizationStatus.printsByDates :
+                tx_publisherdb_visualizationStatus.summedYearData
+            )
             .join('tr');
         bodyRows.append('th')
             .attr('class', tx_publisherdb_tableRow)
             .attr('scope', 'row')
             .attr('class', 'text-right')
-            .html(d => /*createExcludeYearButton(`${tx_publisherdb_tableExcludeYear}-${d.year}`) +*/ d.year);
+            .html(d => tx_publisherdb_visualizationStatus.targetData == 'prints_by_date' ?
+                formatDate(d.date) : d.year);
+
         bodyRows.selectAll(`td.${tx_publisherdb_tableData}`)
             .data(d => d.items)
             .join('td')
             .attr('class', tx_publisherdb_tableData)
             .attr('class', 'text-right')
             .html(d => formatNumber(d));
-        if (!tx_publisherdb_visualizationStatus.singleItem) {
-            bodyRows.append('th')
-                .attr('class', `${tx_publisherdb_tableYear}-total`)
-                .attr('class', 'text-right')
-                .attr('scope', 'row')
-                .html(d => formatNumber(d.total));
+
+        if (tx_publisherdb_visualizationStatus.targetData != 'prints_by_date') {
+            if (!tx_publisherdb_visualizationStatus.singleItem) {
+                bodyRows.append('th')
+                    .attr('class', `${tx_publisherdb_tableYear}-total`)
+                    .attr('class', 'text-right')
+                    .attr('scope', 'row')
+                    .html(d => formatNumber(d.total));
+            }
         }
 
         if (
@@ -130,7 +144,10 @@ const tx_publisherdb_tableController = {
                 .attr('scope', 'col')
                 .attr('class', 'text-right')
                 .html(d => formatNumber(d.sum));
-            if (!tx_publisherdb_visualizationStatus.singleItem) {
+            if (
+                !tx_publisherdb_visualizationStatus.singleItem &&
+                tx_publisherdb_visualizationStatus.targetData != 'prints_by_date'
+            ) {
                 const total = tx_publisherdb_visualizationStatus.sums
                     .map(d => +d.sum)
                     .reduce((a, b) => a + b);

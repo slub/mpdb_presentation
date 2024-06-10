@@ -64,10 +64,12 @@ const tx_publisherdb_dashboardController = {
             .attr('id', 'dashboard-set-cumulative')
             .attr('class', 'primary button hollow dashboard-set-cumulativity')
             .html('kumulativ');
+        /*
         movingAveragesList.append('a')
             .attr('id', 'dashboard-set-absolute')
             .attr('class', 'primary button hollow dashboard-set-cumulativity')
             .html('absolut');
+            */
         movingAveragesList.append('a')
             .attr('id', 'dashboard-set-per-year')
             .attr('class', 'primary button hollow dashboard-set-granularity')
@@ -99,7 +101,7 @@ const tx_publisherdb_dashboardController = {
         $('a.dashboard-set-cumulativity').click ( e => {
             if (e.currentTarget.id == 'dashboard-set-cumulative') {
                 tx_publisherdb_visualizationStatus.config = {
-                    granularity: tx_publisherdb_visualizationStatus.config.granularity,
+                    granularity: tx_publisherdb_granularity.PER_YEAR,
                     cumulativity: tx_publisherdb_cumulativity.CUMULATIVE,
                     movingAverage: -1
                 }
@@ -115,14 +117,14 @@ const tx_publisherdb_dashboardController = {
         $('a.dashboard-set-granularity').click ( e => {
             if (e.currentTarget.id == 'dashboard-set-per-year') {
                 tx_publisherdb_visualizationStatus.config = {
-                    granularity: tx_publisherdb_visualizationStatus.config.granularity,
-                    cumulativity: tx_publisherdb_cumulativity.PER_YEAR,
+                    cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
+                    granularity: tx_publisherdb_granularity.PER_YEAR,
                     movingAverage: -1
                 }
             } else {
                 tx_publisherdb_visualizationStatus.config = {
-                    granularity: tx_publisherdb_visualizationStatus.config.granularity,
-                    cumulativity: tx_publisherdb_cumulativity.BY_DATE,
+                    cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
+                    granularity: tx_publisherdb_granularity.BY_DATE,
                     movingAverage: -1
                 }
             }
