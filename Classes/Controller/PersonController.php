@@ -51,20 +51,12 @@ class PersonController extends AbstractController
         $this->view->assign('graphTarget', self::GRAPH_TARGET);
     }
 
-    protected function get(GndPerson $person): array
+    protected function get(GndPerson $person): Collection
     {
-        $params = [
-            'index' => 'person',
-            'body' => [
-                'query' => [
-                    'match' => [
-                        'uid' => $person->getUid()
-                    ]
-                ]
-            ]
-        ];
-
-        $personData = $this->elasticClient->search($params);
-        return $personData['hits']['hits'][0]['_source'];
+        return $this->searchService->
+            reset()->
+            setIndex('person')->
+            setId($person->getGndId())->
+            search();
     }
 }
