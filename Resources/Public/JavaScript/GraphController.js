@@ -51,6 +51,7 @@ const tx_publisherdb_graphController = {
             tAxis: this._yearAxis,
             tScale: this._yearScale,
             margin: margin,
+            title: '',
             isMain: true
         };
         const mainTimeseries = new TimeseriesView(timeseriesConfig);
@@ -74,6 +75,7 @@ const tx_publisherdb_graphController = {
                 tAxis: this._yearAxis,
                 data: tx_publisherdb_visualizationStatus.summedYearData,
                 tScale: this._yearScale,
+                titles: tx_publisherdb_visualizationStatus.subitemIds,
                 margin: margin
             };
             tx_publisherdb_subitemController.config = subitemConfig;
