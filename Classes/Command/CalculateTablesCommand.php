@@ -135,7 +135,7 @@ class CalculateTablesCommand extends Command
      */
     protected function fetchPublishedItems(): void
     {
-		$coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
+        $coreExtConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('mpdb_core');
         $prefix = $coreExtConf['prefix'];
 
         $params = [
@@ -243,13 +243,13 @@ class CalculateTablesCommand extends Command
      */
     protected function commitPublishedItemTables(): void
     {
-        if ($this->client->indices()->exists(['index' => $this->prefix . PublishedItemController::TABLE_INDEX_NAME])) {
+        if ($this->client->indices()->exists(['index' => $this->prefix . PublishedItemController::TABLE_INDEX_NAME])->asBool()) {
             $this->client->indices()->delete(['index' => $this->prefix . PublishedItemController::TABLE_INDEX_NAME]);
         }
-        if ($this->client->indices()->exists(['index' => $this->prefix . WorkController::TABLE_INDEX_NAME])) {
+        if ($this->client->indices()->exists(['index' => $this->prefix . WorkController::TABLE_INDEX_NAME])->asBool()) {
             $this->client->indices()->delete(['index' => $this->prefix . WorkController::TABLE_INDEX_NAME]);
         }
-        if ($this->client->indices()->exists(['index' => $this->prefix . PersonController::TABLE_INDEX_NAME])) {
+        if ($this->client->indices()->exists(['index' => $this->prefix . PersonController::TABLE_INDEX_NAME])->asBool()) {
             $this->client->indices()->delete(['index' => $this->prefix . PersonController::TABLE_INDEX_NAME]);
         }
 

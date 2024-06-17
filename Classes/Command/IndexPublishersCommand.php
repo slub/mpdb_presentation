@@ -78,7 +78,7 @@ class IndexPublishersCommand extends Command
             )->
             from(self::TABLE_NAME);
 
-        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])) {
+        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])->asBool()) {
             $this->client->indices()->delete(['index' => $prefix . self::INDEX_NAME]);
         }
 
