@@ -7,6 +7,7 @@ const tx_publisherdb_subitemController = {
         this.tAxis = config.tAxis;
         this.tScale = config.tScale;
         this.data = config.data;
+        this.titles = config.titles;
         this.margin = config.margin;
         this.init();
     },
@@ -29,6 +30,7 @@ const tx_publisherdb_subitemController = {
                 tScale: this.tScale,
                 qScale: qScale,
                 data: data,
+                title: this.titles[i],
                 margin: this.margin,
                 isMain: false
             };

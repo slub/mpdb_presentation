@@ -13,6 +13,7 @@ class TimeseriesView {
         this.data = config.data;
         this.margin = config.margin;
         this.isMain = config.isMain;
+        this.title = config.title;
         this.init();
     }
 
@@ -29,6 +30,8 @@ class TimeseriesView {
     }
 
     render() {
+        this.target.append('text')
+            .text(this.title);
         const qScale = this.qScale.range([this._height, 0]);
         const qAxis = d3.axisRight()
             .scale(this.qScale)
