@@ -23,7 +23,10 @@ const tx_publisherdb_graphController = {
 
         const width = $(`#${this._target}`).width();
         const margin = Math.log2(width) * 3 + 10;
-        this.barplotWidth = tx_publisherdb_visualizationStatus.singleItem ? 0 : (width - 3 * margin) / 4;
+        this.barplotWidth = 
+            tx_publisherdb_visualizationStatus.singleItem || 
+            tx_publisherdb_visualizationStatus.targetData == 'prints_per_year_cumulative' ?
+                0 : (width - 3 * margin) / 4;
         this.timeseriesWidth = width - 3 * margin - this.barplotWidth;
 
         this.calculateAxis();
@@ -64,9 +67,6 @@ const tx_publisherdb_graphController = {
             const subitemsTarget = svg.append('g')
                 .attr('id', 'graph-subitems')
                 .attr('transform', `translate(${margin},${2 * margin + timeseriesHeight})`);
-            const barplotTarget = svg.append('g')
-                .attr('id', 'graph-barplot')
-                .attr('transform', `translate(${2 * margin + this.timeseriesWidth},${2 * margin + mainTimeseries.height})`);
 
             const subitemConfig = {
                 target: subitemsTarget,
@@ -82,12 +82,17 @@ const tx_publisherdb_graphController = {
 
             svg.attr('height', mainTimeseries.height + tx_publisherdb_subitemController.height + margin * 4);
 
-            const barplotConfig = {
-                target: barplotTarget,
-                width: this.barplotWidth,
-                height: tx_publisherdb_subitemController.height
-            };
-            tx_publisherdb_barplotController.config = barplotConfig;
+            if (tx_publisherdb_visualizationStatus.targetData != 'prints_per_year_cumulative') {
+                const barplotTarget = svg.append('g')
+                    .attr('id', 'graph-barplot')
+                    .attr('transform', `translate(${2 * margin + this.timeseriesWidth},${2 * margin + mainTimeseries.height})`);
+                const barplotConfig = {
+                    target: barplotTarget,
+                    width: this.barplotWidth,
+                    height: tx_publisherdb_subitemController.height
+                };
+                tx_publisherdb_barplotController.config = barplotConfig;
+            }
         }
     }
 }
