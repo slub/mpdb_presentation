@@ -204,7 +204,6 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     updateView () {
-        console.log(this._config);
         if (this._config.cumulativity == tx_publisherdb_cumulativity.ABSOLUTE) {
             if (this._config.granularity == tx_publisherdb_granularity.BY_DATE) {
                 this._targetData = 'prints_by_date';
@@ -263,6 +262,21 @@ let tx_publisherdb_visualizationStatus = {
                 }))
                 .sort(this.sort)
                 .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
+
+            if (this.targetData == 'prints_per_year_cumulative') {
+                for(let i = 0; i < yearData.length; i++) {
+                    for (let j = 0; j < yearData[i].items.length; j++) {
+                        if (yearData[i].items[j] == 0 && i > 0) {
+                            let runner = i - 1;
+                            while (runner > 0 && yearData[runner].items[j] == 0) {
+                                runner--;
+                            }
+                            yearData[i].items[j] = yearData[runner].items[j];
+                        }
+                    }
+                }
+            }
+
             this.summedYearData = yearData.map(({year, items}) => ({
                 year, items,
                 total: items.reduce((a, b) => +a + b)

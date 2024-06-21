@@ -37,7 +37,7 @@ const tx_publisherdb_graphController = {
             .attr('transform', `translate(${margin},${margin})`);
 
         const qScale = d3.scaleLinear()
-            .domain(d3.extent(tx_publisherdb_visualizationStatus.summedYearData, d => d.total));
+            .domain([0, d3.max(tx_publisherdb_visualizationStatus.summedYearData, d => d.total)]);
 
         const qAxis = d3.axisRight()
             .scale(this.qScale);
