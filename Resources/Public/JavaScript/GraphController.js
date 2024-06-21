@@ -18,6 +18,10 @@ const tx_publisherdb_graphController = {
     },
 
     render() {
+        const graphType = 
+            tx_publisherdb_visualizationStatus.targetData == 'prints_per_year' ||
+            tx_publisherdb_visualizationStatus.targetData == 'prints_by_date' ?
+                'columns' : 'area';
         const target = d3.select(`#${this._target}`);
         target.html('');
 
@@ -55,7 +59,8 @@ const tx_publisherdb_graphController = {
             tScale: this._yearScale,
             margin: margin,
             title: '',
-            isMain: true
+            isMain: true,
+            type: graphType
         };
         const mainTimeseries = new TimeseriesView(timeseriesConfig);
 
@@ -76,7 +81,8 @@ const tx_publisherdb_graphController = {
                 data: tx_publisherdb_visualizationStatus.summedYearData,
                 tScale: this._yearScale,
                 titles: tx_publisherdb_visualizationStatus.subitemIds,
-                margin: margin
+                margin: margin,
+                type: graphType
             };
             tx_publisherdb_subitemController.config = subitemConfig;
 
