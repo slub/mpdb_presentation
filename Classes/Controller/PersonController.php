@@ -41,6 +41,13 @@ class PersonController extends AbstractController
             setIndex(self::TABLE_INDEX_NAME)->
             setId($person->getGndId())->
             search();
+        $hasPrints = $document->
+            get('published_items')->
+            pluck('published_subitems')->
+            flatten(1)->
+            pluck('prints_by_date')->
+            filter()->
+            count();
 
         $visualizationCall = $this->getJsCall($document, $this->publishers, $personData['name']);
         $this->view->assign('publishers', $this->publishers->all());
@@ -49,6 +56,7 @@ class PersonController extends AbstractController
         $this->view->assign('dashboardTarget', self::DASHBOARD_TARGET);
         $this->view->assign('person', $personData);
         $this->view->assign('graphTarget', self::GRAPH_TARGET);
+        $this->view->assign('hasPrints', $hasPrints);
     }
 
     protected function get(GndPerson $person): Collection

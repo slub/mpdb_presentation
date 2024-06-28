@@ -55,7 +55,7 @@ const tx_publisherdb_tableController = {
             .attr('class', 'text-right');
 
         if (tx_publisherdb_visualizationStatus.singlePrint) {
-            yearHead.html('Jahr');
+            yearHead.html('Datum');
         } else {
             yearHead.html(createSortButton(`${tx_publisherdb_tableSortItem}-year`) + ' Jahr');
         }
