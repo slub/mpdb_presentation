@@ -96,9 +96,22 @@ Otherwise your changes will be overwritten the next time you save the extension 
             </div>
         </div>
         <div class="graph-container">
-            <div id="{graphTarget}"></div>
-            <div id="{dashboardTarget}"></div>
-            <div id="{tableTarget}"> </div>
+            <f:if condition="{hasPrints}">
+                <f:then>
+                    <div id="{graphTarget}"></div>
+                    <div id="{dashboardTarget}"></div>
+                    <div id="{tableTarget}"> </div>
+                    {visualizationCall->f:format.raw()}
+                </f:then>
+                <f:else>
+                    <h3>
+                        <f:translate key="mpdbresearch.noEconomicData" />
+                    </h3>
+                    <p>
+                        <f:translate key="mpdbresearch.noEconomicDataParagraph" />
+                    </p>
+                </f:else>
+            </f:if>
         </div>
     </div>
 
@@ -129,7 +142,6 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </f:else>
     </f:if>
 
-    {visualizationCall->f:format.raw()}
 </f:section>
 
 <f:section name="wrap"/>

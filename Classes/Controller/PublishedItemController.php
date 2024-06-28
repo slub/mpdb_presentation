@@ -55,7 +55,7 @@ class PublishedItemController extends AbstractController
         foreach ($publisherMikroItems as $publisherMikroItem) {
             $publisherActions = array_merge(
             $publisherActions, 
-            $this->publisherActionRepository->findByPublisherMikroItem($publisherMikroItem)->toArray()
+            $this->publisherActionRepository->findByPublishedsubitem($publisherMikroItem)->toArray()
             );
         }
         usort($publisherActions, $sortByDate);

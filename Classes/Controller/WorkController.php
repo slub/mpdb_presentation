@@ -7,6 +7,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use \TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
+use \Slub\MpdbCore\Command\IndexCommand;
 use \Slub\MpdbCore\Domain\Model\Publisher;
 use \Slub\MpdbCore\Domain\Model\PublisherMakroItem;
 use \Slub\MpdbCore\Lib\DbArray;
@@ -45,11 +46,24 @@ class WorkController extends AbstractController
             $work = $work->getSuperWork();
         }
 
+        $indexedWork = $this->searchService->
+            reset()->
+            setIndex(IndexCommand::WORK_INDEX)->
+            setId($work->getGndId())->
+            search();
         $document = $this->searchService->
             reset()->
             setIndex(self::TABLE_INDEX_NAME)->
             setId($work->getGndId())->
             search();
+        $hasPrints = $document->
+            get('published_items')->
+            pluck('published_subitems')->
+            flatten(1)->
+            pluck('prints_by_date')->
+            filter()->
+            count();
+        $publishedItems = $this->publishedItemRepository->findByContainedWorks($work->getUid());
         $altTitles = explode(' $ ', $work->getAltTitles());
 
         $visualizationCall = $this->getJsCall($document, $this->publishers, $work->getFullTitle());
@@ -58,7 +72,9 @@ class WorkController extends AbstractController
         $this->view->assign('tableTarget', self::TABLE_TARGET);
         $this->view->assign('dashboardTarget', self::DASHBOARD_TARGET);
         $this->view->assign('graphTarget', self::GRAPH_TARGET);
-        $this->view->assign('work', $work);
+        $this->view->assign('work', $indexedWork);
+        $this->view->assign('publishedItems', $publishedItems);
         $this->view->assign('altTitles', $altTitles);
+        $this->view->assign('hasPrints', $hasPrints);
     }
 }
