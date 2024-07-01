@@ -19,24 +19,32 @@ const tx_publisherdb_dashboardController = {
 
         const excludedItems = target.append('div')
             .attr('id', 'dashboard-excluded-items');
+        excludedItems.append('h3')
+            .text('Ausgeschlossene Verlagsartikel');
         if (tx_publisherdb_visualizationStatus.excludedElements.length) {
-            excludedItems.append('h3')
-                .text('Ausgeschlossene Einheiten');
             const excludedItemList = excludedItems.append('div')
                 .attr('class', 'tiny button-group');
+            d3.select('tx_mpdbpresentation_excludeinfo');
             excludedItemList.selectAll(`a.${tx_publisherdb_dashboardExcludedItem}`)
                 .data(tx_publisherdb_visualizationStatus.excludedElements.sort())
                 .join('a')
                 .attr('class', `${tx_publisherdb_dashboardExcludedItem} primary button hollow include-element`)
                 .attr('id', d => d)
                 .html(d => d);
+        } else {
+            excludedItems.append('p')
+                .style('font-style', 'italic')
+                .style('font-size', '80%')
+                .attr('id', 'tx_mpdbpresentation_excludeinfo')
+                .text('keine Verlagsartikel ausgeschlossen')
         }
 
+        /*
         const excludedYears = target.append('div')
             .attr('id', 'dashboard-excluded-years');
+        excludedYears.append('h3')
+            .text('Ausgeschlossene Jahre');
         if (tx_publisherdb_visualizationStatus.excludedYears.length) {
-            excludedYears.append('h3')
-                .text('Ausgeschlossene Jahre');
             const excludedYearList = excludedYears.append('div')
                 .attr('class', 'tiny button-group');
             excludedYearList.selectAll(`a.${tx_publisherdb_dashboardExcludedYear}`)
@@ -46,11 +54,12 @@ const tx_publisherdb_dashboardController = {
                 .attr('id', d => d)
                 .html(d => d);
         }
+        */
 
         const movingAverages = target.append('div')
             .attr('id', 'dashboard-moving-averages')
         movingAverages.append('h3')
-            .html('Gleitende Mittelwerte');
+            .html('Anzeige');
         const movingAveragesList = movingAverages.append('div')
             .attr('class', 'tiny button-group');
         tx_publisherdb_visualizationStatus.movingAverages.forEach( ma => {
@@ -130,9 +139,9 @@ const tx_publisherdb_dashboardController = {
             }
         });
 
-        const publishers = target.append('div')
-            .attr('id', 'dashboard-publishers');
         if (!tx_publisherdb_visualizationStatus.isPublishedItem) {
+            const publishers = target.append('div')
+                .attr('id', 'dashboard-publishers');
             publishers.append('h3')
                 .text('Verlage');
             const publisherList = publishers.append('div')
