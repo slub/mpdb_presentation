@@ -123,6 +123,7 @@ let tx_publisherdb_visualizationStatus = {
             this._data.published_subitems[0].prints_per_year.length == 1
         ) {
             this.singlePrint = true;
+            this._config.granularity = tx_publisherdb_granularity.BY_DATE;
         }
 
         const suborder = this._isPublishedItem ? data.published_subitems :
@@ -204,7 +205,6 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     updateView () {
-        console.log(this._config);
         if (this._config.cumulativity == tx_publisherdb_cumulativity.ABSOLUTE) {
             if (this._config.granularity == tx_publisherdb_granularity.BY_DATE) {
                 this._targetData = 'prints_by_date';
@@ -226,18 +226,18 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     updateData() {
+        // retrieve published subitems
+        const publishedSubitems = this.isPublishedItem ? this.data.published_subitems :
+            this.data.published_items.map(d => d.published_subitems).flat();
+        const currentPublisherShorthand = this.currentPublisher ?? null;
+        const currentPublisherRegex = currentPublisherShorthand ? new RegExp(`\\b${currentPublisherShorthand}_\w*`) : null;
+
+        // retrieve ids for table header
+        this.subitemIds = publishedSubitems.map(d => d.id)
+            .filter(d => !this.excludedElements.includes(d))
+            .filter(d => currentPublisherRegex ? currentPublisherRegex.test(d) : true);
+
         if (this._targetData != 'prints_by_date') {
-            // retrieve published subitems
-            const publishedSubitems = this.isPublishedItem ? this.data.published_subitems :
-                this.data.published_items.map(d => d.published_subitems).flat();
-            const currentPublisherShorthand = this.currentPublisher ?? null;
-            const currentPublisherRegex = currentPublisherShorthand ? new RegExp(`\\b${currentPublisherShorthand}_\w*`) : null;
-
-            // retrieve ids for table header
-            this.subitemIds = publishedSubitems.map(d => d.id)
-                .filter(d => !this.excludedElements.includes(d))
-                .filter(d => currentPublisherRegex ? currentPublisherRegex.test(d) : true);
-
             // retrieve per year data including totals for table body
             const years = publishedSubitems.map(subitem => {
                     const targetData = subitem[this.targetData] ?? [];
@@ -263,6 +263,21 @@ let tx_publisherdb_visualizationStatus = {
                 }))
                 .sort(this.sort)
                 .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
+
+            if (this.targetData == 'prints_per_year_cumulative') {
+                for(let i = 0; i < yearData.length; i++) {
+                    for (let j = 0; j < yearData[i].items.length; j++) {
+                        if (yearData[i].items[j] == 0 && i > 0) {
+                            let runner = i - 1;
+                            while (runner > 0 && yearData[runner].items[j] == 0) {
+                                runner--;
+                            }
+                            yearData[i].items[j] = yearData[runner].items[j];
+                        }
+                    }
+                }
+            }
+
             this.summedYearData = yearData.map(({year, items}) => ({
                 year, items,
                 total: items.reduce((a, b) => +a + b)
