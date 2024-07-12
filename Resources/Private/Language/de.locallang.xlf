@@ -124,7 +124,7 @@
                 <source>edited work</source>
                 <target>bearbeitetes Werk</target>
             </trans-unit>
-            <trans-unit id="mpdbresearch.editedWork">
+            <trans-unit id="mpdbresearch.noWorkData">
                 <source>No workdata could be found for this item.</source>
                 <target>Für diesen Verlagsartikel konnten keine Werkdaten erschlossen werden.</target>
             </trans-unit>
@@ -147,6 +147,10 @@
             <trans-unit id="mpdbresearch.noEconomicDataParagraph">
                 <source>No economic data could be retrieved for several published items.</source>
                 <target>Für einige Verlagsartikel konnten keine Wirtschaftsdaten gefunden werden.</target>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.typeTooltip">
+                <source>The type of the published item indicates, whether it is a simple work print, a collection print, a version or something else.</source>
+                <target>Der Typ des Verlagsartikels gibt an, ob es sich um einen einfachen Werkdruck, einen Sammeldruck, eine Bearbeitung oder etwas anderes handelt.</target>
             </trans-unit>
         </body>
     </file>
