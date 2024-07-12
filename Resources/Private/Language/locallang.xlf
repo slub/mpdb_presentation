@@ -90,6 +90,18 @@
             <trans-unit id="mpdbresearch.noEconomicDataParagraph">
                 <source>No economic data could be retrieved for several published items.</source>
             </trans-unit>
+            <trans-unit id="mpdbresearch.containedWork">
+                <source>contained work</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.containedWorks">
+                <source>contained works</source>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.editedWork">
+                <source>edited work</source>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.typeTooltip">
+                <source>The type of the published item indicates, whether it is a simple work print, a collection print, a version or something else.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
