@@ -117,10 +117,11 @@ let tx_publisherdb_visualizationStatus = {
         this._isPublishedItem = data.published_subitems ? true : false;
         this._data = data;
 
+        const publishedSubitems = this._data.published_subitems ??
+            this._data.published_items.flatMap(({id, published_subitems}) => published_subitems);
         if (
-            this._data.published_subitems &&
-            this._data.published_subitems.length == 1 && 
-            this._data.published_subitems[0].prints_per_year.length == 1
+            publishedSubitems.length == 1 && 
+            publishedSubitems[0].prints_per_year.length == 1
         ) {
             this.singlePrint = true;
             this._config.granularity = tx_publisherdb_granularity.BY_DATE;
