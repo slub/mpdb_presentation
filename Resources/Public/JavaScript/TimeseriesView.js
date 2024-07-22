@@ -49,10 +49,10 @@ class TimeseriesView {
 
         const bandScale = d3.scaleBand()
             .range([0, this.width])
-            .domain(d3.extent(this.data, d => +d.year))
-            .align(0)
-            .paddingOuter(.25)
-            .paddingInner(.5);
+            .domain(this.data.map(d => d.year))
+            .align(.5)
+            .paddingOuter(.1)
+            .paddingInner(.2);
 
         this.target.append('g')
             .attr('transform', `translate(${this.width},0)`)

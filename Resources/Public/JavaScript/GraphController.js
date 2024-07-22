@@ -10,10 +10,16 @@ const tx_publisherdb_graphController = {
             .domain(d3.extent(tx_publisherdb_visualizationStatus.years))
             .range([0, this.timeseriesWidth])
             .nice();
+        this._yearBandScale = d3.scaleBand()
+            .range([0, this.timeseriesWidth])
+            .domain(tx_publisherdb_visualizationStatus.years);
 
         this._yearAxis = d3.axisBottom()
             .tickFormat(d3.format(' '))
             .scale(this._yearScale);
+        this._yearBandAxis = d3.axisBottom()
+            .tickFormat(d3.format(' '))
+            .scale(this._yearBandScale);
 
     },
 
@@ -55,7 +61,7 @@ const tx_publisherdb_graphController = {
             data: tx_publisherdb_visualizationStatus.summedYearData.map(d => ({year: d.year, quantity: d.total})),
             qAxis: qAxis,
             qScale: qScale,
-            tAxis: this._yearAxis,
+            tAxis: graphType == 'area' ? this._yearAxis : this._yearBandAxis,
             tScale: this._yearScale,
             margin: margin,
             title: '',
@@ -77,7 +83,7 @@ const tx_publisherdb_graphController = {
                 target: subitemsTarget,
                 startY: timeseriesHeight + margin * 2,
                 width: this.timeseriesWidth,
-                tAxis: this._yearAxis,
+                tAxis: graphType == 'area' ? this._yearAxis : this._yearBandAxis,
                 data: tx_publisherdb_visualizationStatus.summedYearData,
                 tScale: this._yearScale,
                 titles: tx_publisherdb_visualizationStatus.subitemIds,
