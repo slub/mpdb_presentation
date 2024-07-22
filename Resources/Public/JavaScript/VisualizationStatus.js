@@ -227,6 +227,8 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     updateData() {
+        // unification function
+        const unify = date => d3.isoParse(`${date}`).getYear() + 1900;
         // retrieve published subitems
         const publishedSubitems = this.isPublishedItem ? this.data.published_subitems :
             this.data.published_items.map(d => d.published_subitems).flat();
@@ -238,64 +240,62 @@ let tx_publisherdb_visualizationStatus = {
             .filter(d => !this.excludedElements.includes(d))
             .filter(d => currentPublisherRegex ? currentPublisherRegex.test(d) : true);
 
-        if (this._targetData != 'prints_by_date') {
-            // retrieve per year data including totals for table body
-            const years = publishedSubitems.map(subitem => {
-                    const targetData = subitem[this.targetData] ?? [];
-                    return targetData.map(print => print.date);
-                })
-                .flat();
-            this.years = d3.range(+d3.min(years), +d3.max(years) + 1)
-                .filter(year => !this.excludedYears.includes(year));
+        // retrieve per year data including totals for table body
+        const years = publishedSubitems.map(subitem => {
+                const targetData = subitem[this.targetData] ?? [];
+                return targetData.map(print => unify(print.date));
+            })
+            .flat();
+        this.years = d3.range(+d3.min(years), +d3.max(years) + 1)
+            .filter(year => !this.excludedYears.includes(year));
 
-            const yearData = this.years.map(year => ({
-                    year: year,
-                    items: publishedSubitems
-                        .filter(item => !this.excludedElements.includes(item.id))
-                        .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
-                        .map(prints => {
-                            const targetData = prints[this.targetData] ?? [];
-                            const targetPrint = targetData.filter(print => print.date == year);
-                            return {
-                                id: prints.id,
-                                quantity: targetPrint.length > 0 ? targetPrint[0].quantity : 0
-                            };
-                        }),
-                }))
-                .sort(this.sort)
-                .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
+        const yearData = this.years.map(year => ({
+                year: year,
+                items: publishedSubitems
+                    .filter(item => !this.excludedElements.includes(item.id))
+                    .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
+                    .map(prints => {
+                        const targetData = prints[this.targetData] ?? [];
+                        const targetPrint = targetData.filter(print => unify(print.date) == year);
+                        return {
+                            id: prints.id,
+                            quantity: targetPrint.length > 0 ? targetPrint[0].quantity : 0
+                        };
+                    }),
+            }))
+            .sort(this.sort)
+            .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
 
-            if (this.targetData == 'prints_per_year_cumulative') {
-                for(let i = 0; i < yearData.length; i++) {
-                    for (let j = 0; j < yearData[i].items.length; j++) {
-                        if (yearData[i].items[j] == 0 && i > 0) {
-                            let runner = i - 1;
-                            while (runner > 0 && yearData[runner].items[j] == 0) {
-                                runner--;
-                            }
-                            yearData[i].items[j] = yearData[runner].items[j];
+        if (this.targetData == 'prints_per_year_cumulative') {
+            for(let i = 0; i < yearData.length; i++) {
+                for (let j = 0; j < yearData[i].items.length; j++) {
+                    if (yearData[i].items[j] == 0 && i > 0) {
+                        let runner = i - 1;
+                        while (runner > 0 && yearData[runner].items[j] == 0) {
+                            runner--;
                         }
+                        yearData[i].items[j] = yearData[runner].items[j];
                     }
                 }
             }
-
-            this.summedYearData = yearData.map(({year, items}) => ({
-                year, items,
-                total: items.reduce((a, b) => +a + b)
-            }));
-
-            // retrieve per item sums for table footer
-            this.sums = publishedSubitems.filter(item => !this.excludedElements.includes(item.id))
-                .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
-                .map(
-                    subitem => {
-                        const targetData = subitem[this.targetData] ?? [];
-                        const filteredTargetData = targetData.filter(print => !this.excludedYears.includes(print.date));
-                        const sum = filteredTargetData.length ? filteredTargetData.map(print => print.quantity)
-                            ?.reduce( (a, b) => +a + b ) : null
-                        return { id: subitem.id, sum: sum };
-                    });
         }
+
+        this.summedYearData = yearData.map(({year, items}) => ({
+            year, items,
+            total: items.reduce((a, b) => +a + b)
+        }));
+
+        // retrieve per item sums for table footer
+        this.sums = publishedSubitems.filter(item => !this.excludedElements.includes(item.id))
+            .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
+            .map(
+                subitem => {
+                    const targetData = subitem[this.targetData] ?? [];
+                    const filteredTargetData = targetData.filter(print => !this.excludedYears.includes(print.date));
+                    const sum = filteredTargetData.length ? filteredTargetData.map(print => print.quantity)
+                        ?.reduce( (a, b) => +a + b ) : null
+                    return { id: subitem.id, sum: sum };
+                });
     },
 
     registerView: function (view) {
