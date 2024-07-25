@@ -58,16 +58,16 @@ Otherwise your changes will be overwritten the next time you save the extension 
                 <div class="content">
                     <h4> {publishedItem.mvdbId} </h4>
                     <span data-tooltip title="{f:translate(key:'mpdbresearch.typeTooltip')}">
-                        <f:translate key="LLL:EXT:mpdb-core/Resources/Private/Language/locallang_csh_publisheditem:{publishedItem.type}" />
+                        <f:translate key="LLL:EXT:mpdb_core/Resources/Private/Language/locallang_csh_publisheditem.xlf:type.{publishedItem.type}" />
                     </span>
                     <table>
-                        <f:if condition="{publishedItem.editor}">
+                        <f:if condition="{publishedItem.editors.0}">
                             <tr>
                                 <td>
-                                    <f:translate key="LLL:EXT:mpdb-core/Resources/Private/Language/locallang_csh_publisheditem:editor" />
+                                    <f:translate key="LLL:EXT:mpdb_core/Resources/Private/Language/locallang_csh_publisheditem.xlf:editor" />
                                 </td>
                                 <td>
-                                    {publishedItem.editor.name}
+                                    {publishedItem.editors.0.name}
                                     <f:if condition="{publishedItem.editor.dateOfBirth}">
                                         <span data-tooltip title="*{publishedItem.editor.dateOfBirth->f:format.date(format:'d.m.Y')}, {publishedItem.editor.placeOfBirth}, &#x271D;{publishedItem.editor.dateOfDeath->f:format.date(format:'d.m.Y')}, {publishedItem.editor.placeOfDeath}">
                                             ({publishedItem.editor.dateOfBirth->f:format.date(format:'Y')}&ndash; 
