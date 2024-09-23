@@ -167,9 +167,11 @@
             <div class="graph-container">
                 <f:if condition="{hasPrints}">
                     <f:then>
+                        <div class="{dashboardTarget}"></div>
                         <div id="{graphTarget}"> </div>
-                        <div id="{dashboardTarget}"></div>
+                        <div class="{dashboardTarget}"></div>
                         <div id="{tableTarget}"> </div>
+                        <div class="{dashboardTarget}"></div>
                         {visualizationCall->f:format.raw()}
                     </f:then>
                     <f:else>
