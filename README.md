@@ -2,7 +2,7 @@ Presentation Module of the Music Publisher Database
 ===================================================
 
 [![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
-[![CC-BY](https://img.shields.io/github/license/dikastes/mpdb_presentation)](https://github.com/dikastes/mpdb_presentation/blob/main/LICENSE)
+[![CC-BY](https://img.shields.io/github/license/slub/mpdb_presentation)](https://github.com/slub/mpdb_presentation/blob/main/LICENSE)
 
 This package provides a set of presentation tools for the music publisher database.
 
