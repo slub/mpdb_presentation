@@ -2,6 +2,14 @@ const tx_publisherdb_dashboardExcludedItem = 'excluded-item';
 const tx_publisherdb_dashboardExcludedYear = 'excluded-year';
 const tx_publisherdb_dashboardPublisher = 'publisher';
 
+const prefix = 'dashboard';
+const movingAverages = `${prefix}-moving-averages`;
+const setMovingAverage = `${prefix}-set-moving-average`;
+const setCumulative = `${prefix}-set-cumulative`;
+const setPerYear = `${prefix}-set-per-year`;
+const setByDate = `${prefix}-set-by-date`;
+const btnClassList = 'primary button hollow';
+
 const tx_publisherdb_dashboardController = {
 
     set target(target) {
@@ -14,7 +22,7 @@ const tx_publisherdb_dashboardController = {
         target.html('');
 
         const movingAverages = target.append('div')
-            .attr('id', 'dashboard-moving-averages')
+            .attr('class', 'display')
         movingAverages.append('h3')
             .html('Anzeige');
         const movingAveragesList = movingAverages.append('div')
@@ -22,26 +30,27 @@ const tx_publisherdb_dashboardController = {
         tx_publisherdb_visualizationStatus.movingAverages.forEach( ma => {
             movingAveragesList
                 .append('a')
-                .attr('id', `dashboard-set-moving-average-${ma}`)
-                .attr('class', 'dashboard-set-moving-average primary button hollow')
+                .attr('data', ma)
+                .attr('type', setMovingAverage)
+                .attr('class', btnClassList)
                 .html(`gleitender MW ${ma}`);
         });
         movingAveragesList.append('a')
-            .attr('id', 'dashboard-set-cumulative')
-            .attr('class', 'primary button hollow dashboard-set-cumulativity')
+            .attr('type', setCumulative)
+            .attr('class', btnClassList)
             .html('kumulativ');
         movingAveragesList.append('a')
-            .attr('id', 'dashboard-set-per-year')
-            .attr('class', 'primary button hollow dashboard-set-granularity')
+            .attr('type', setPerYear)
+            .attr('class', btnClassList)
             .html('pro Jahr');
         movingAveragesList.append('a')
-            .attr('id', 'dashboard-set-by-date')
-            .attr('class', 'primary button hollow dashboard-set-granularity')
+            .attr('type', setByDate)
+            .attr('class', btnClassList)
             .html('nach Datum');
 
         if (!tx_publisherdb_visualizationStatus.isPublishedItem) {
             const publishers = target.append('div')
-                .attr('id', 'dashboard-publishers');
+                .attr('class', 'dashboard-publishers');
             publishers.append('h3')
                 .text('Verlage');
             const publisherList = publishers.append('div')
@@ -50,13 +59,13 @@ const tx_publisherdb_dashboardController = {
                 .data(tx_publisherdb_visualizationStatus.publishers)
                 .join('a')
                 .attr('class', `${tx_publisherdb_dashboardPublisher} primary button hollow include-year`)
-                .attr('id', d => d.id)
+                .attr('class', d => d.id)
                 .html(d => d.id)
                 .attr('title', d => d.name);
         }
 
         const excludedItems = target.append('div')
-            .attr('id', 'dashboard-excluded-items');
+            .attr('class', 'dashboard-excluded-items');
         excludedItems.append('h3')
             .text('Ausgeschlossene Verlagsartikel');
         if (tx_publisherdb_visualizationStatus.excludedElements.length) {
@@ -80,9 +89,10 @@ const tx_publisherdb_dashboardController = {
     },
 
     render() {
-        const createIncludeButton = type => id => `<a id="${id}" class="include-${type} m-1"> + </a>`;
+        const createIncludeButton = type => id => `<a class="${id}" class="include-${type} m-1"> + </a>`;
         const createYearIncludeButton = createIncludeButton('year');
         const createElementIncludeButton = createIncludeButton('element');
+        const displayBtnList = `a[type=${setMovingAverage}], a[type=${setCumulative}], a[type=${setPerYear}], a[type=${setByDate}]`;
 
         const target = d3.selectAll(`.${this._target}`);
         target.nodes().forEach(target => this.draw(target));
@@ -97,45 +107,49 @@ const tx_publisherdb_dashboardController = {
             tx_publisherdb_visualizationStatus.includeElement(element);
         });
 
-        $('a.dashboard-set-moving-average').click ( e => {
-            const ma = e.currentTarget.id.replace('dashboard-set-moving-average-', '');
+        $(`a[type=${setMovingAverage}]`).click ( e => {
+            const ma = e.currentTarget.attributes.data.nodeValue;
             tx_publisherdb_visualizationStatus.config = {
                 granularity: tx_publisherdb_granularity.PER_YEAR,
                 cumulativity: tx_publisherdb_cumulativity.MOVING_AVERAGE,
                 movingAverage: ma
             };
+
+            $(displayBtnList).addClass('hollow');
+            $(`a[type=${setMovingAverage}][data=${ma}]`).removeClass('hollow');
         });
 
-        $('a.dashboard-set-cumulativity').click ( e => {
-            if (e.currentTarget.id == 'dashboard-set-cumulative') {
-                tx_publisherdb_visualizationStatus.config = {
-                    granularity: tx_publisherdb_granularity.PER_YEAR,
-                    cumulativity: tx_publisherdb_cumulativity.CUMULATIVE,
-                    movingAverage: -1
-                }
-            } else {
-                tx_publisherdb_visualizationStatus.config = {
-                    granularity: tx_publisherdb_visualizationStatus.config.granularity,
-                    cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
-                    movingAverage: -1
-                }
+        $(`a[type=${setCumulative}]`).click ( e => {
+            tx_publisherdb_visualizationStatus.config = {
+                granularity: tx_publisherdb_granularity.PER_YEAR,
+                cumulativity: tx_publisherdb_cumulativity.CUMULATIVE,
+                movingAverage: -1
             }
+
+            $(displayBtnList).addClass('hollow');
+            $(`a[type=${setCumulative}]`).removeClass('hollow');
         });
 
-        $('a.dashboard-set-granularity').click ( e => {
-            if (e.currentTarget.id == 'dashboard-set-per-year') {
-                tx_publisherdb_visualizationStatus.config = {
-                    cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
-                    granularity: tx_publisherdb_granularity.PER_YEAR,
-                    movingAverage: -1
-                }
-            } else {
-                tx_publisherdb_visualizationStatus.config = {
-                    cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
-                    granularity: tx_publisherdb_granularity.BY_DATE,
-                    movingAverage: -1
-                }
+        $(`a[type=${setPerYear}]`).click ( e => {
+            tx_publisherdb_visualizationStatus.config = {
+                cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
+                granularity: tx_publisherdb_granularity.PER_YEAR,
+                movingAverage: -1
             }
+
+            $(displayBtnList).addClass('hollow');
+            $(`a[type=${setPerYear}]`).removeClass('hollow');
+        });
+
+        $(`a[type=${setByDate}]`).click ( e => {
+            tx_publisherdb_visualizationStatus.config = {
+                cumulativity: tx_publisherdb_cumulativity.ABSOLUTE,
+                granularity: tx_publisherdb_granularity.BY_DATE,
+                movingAverage: -1
+            }
+
+            $(displayBtnList).addClass('hollow');
+            $(`a[type=${setByDate}]`).removeClass('hollow');
         });
 
         $(`a.${tx_publisherdb_dashboardPublisher}`).click ( e => {
