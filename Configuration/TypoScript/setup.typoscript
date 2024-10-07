@@ -53,17 +53,23 @@ plugin.tx_mpdbpresentation_mpdbresearch {
         teamPage {
             pid = {$config.teamPage.pid}
         }
+        guidelinePage {
+            pid = {$config.guidelinePage.pid}
+        }
+        abbrPage {
+            pid = {$config.abbrPage.pid}
+        }
     }
 }
 
-plugin.mpdbpresentation_mpdbwelcome {
+plugin.tx_mpdbpresentation_mpdbwelcome {
     view {
         templateRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Templates/
-        templateRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.templateRootPath}
+        templateRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.templateRootPath}
         partialRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Partials/
-        partialRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.partialRootPath}
+        partialRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.partialRootPath}
         layoutRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Layouts/
-        layoutRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbresearch.view.layoutRootPath}
+        layoutRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.layoutRootPath}
     }
     persistence {
         storagePid = {$plugin.tx_mpdbpresentation_mpdbwelcome.persistence.storagePid}
@@ -75,6 +81,11 @@ plugin.mpdbpresentation_mpdbwelcome {
         ignoreAllEnableFieldsInBe = 0
         # Should be on by default, but can be disabled if all action in the plugin are uncached
         requireCHashArgumentForActionArguments = 1
+    }
+    settings {
+        researchPage {
+            pid = {$config.researchPage.pid}
+        }
     }
 }
 
