@@ -13,6 +13,17 @@ plugin.tx_mpdbpresentation_mpdbapi {
     }
 }
 
+plugin.tx_mpdbpresentation_mpdbwelcome {
+    view {
+        # cat=plugin.tx_mpdbpresentation_mpdbresearch/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:mpdb_presentation/Resources/Private/Templates/
+        # cat=plugin.tx_mpdbpresentation_mpdbresearch/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:mpdb_presentation/Resources/Private/Partials/
+        # cat=plugin.tx_mpdbpresentation_mpdbresearch/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:mpdb_presentation/Resources/Private/Layouts/
+    }
+}
+
 plugin.tx_mpdbpresentation_mpdbresearch {
     view {
         # cat=plugin.tx_mpdbpresentation_mpdbresearch/file; type=string; label=Path to template root (FE)
