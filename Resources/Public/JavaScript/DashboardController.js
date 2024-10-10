@@ -36,7 +36,7 @@ const tx_publisherdb_dashboardController = {
                 .style('font-style', 'italic')
                 .style('font-size', '80%')
                 .attr('id', 'tx_mpdbpresentation_excludeinfo')
-                .text('keine Verlagsartikel ausgeschlossen')
+                .text('Sie können in der tabellarischen Ansicht auf das "X" klicken, um einzelne Verlagsteilartikel aus den Ansichten auszuschließen.')
         }
 
         /*
