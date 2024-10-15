@@ -8,8 +8,7 @@ const tx_publisherdb_graphController = {
     calculateAxis() {
         this._yearScale = d3.scaleLinear()
             .domain(d3.extent(tx_publisherdb_visualizationStatus.years))
-            .range([0, this.timeseriesWidth])
-            .nice();
+            .range([0, this.timeseriesWidth]);
         this._yearBandScale = d3.scaleBand()
             .range([0, this.timeseriesWidth])
             .domain(tx_publisherdb_visualizationStatus.years);
@@ -19,7 +18,8 @@ const tx_publisherdb_graphController = {
             .scale(this._yearScale);
         this._yearBandAxis = d3.axisBottom()
             .tickFormat(d3.format(' '))
-            .scale(this._yearBandScale);
+            .scale(this._yearBandScale)
+            .tickValues(this._yearScale.ticks());
 
     },
 
