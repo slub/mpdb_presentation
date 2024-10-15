@@ -76,7 +76,7 @@
                 <source>supplementary title information</source>
                 </trans-unit>
             <trans-unit id="mpdbresearch.printedIn">
-                <source>printed in</source>
+                <source>related published items</source>
                 </trans-unit>
             <trans-unit id="mpdbresearch.partialWorks">
                 <source>partial works</source>
@@ -94,7 +94,7 @@
                 <source>No economic data</source>
             </trans-unit>
             <trans-unit id="mpdbresearch.noEconomicDataParagraph">
-                <source>No economic data could be retrieved for several published items.</source>
+                <source>The evaluated sources did not contain any economic data.</source>
             </trans-unit>
             <trans-unit id="mpdbresearch.containedWork">
                 <source>contained work</source>
