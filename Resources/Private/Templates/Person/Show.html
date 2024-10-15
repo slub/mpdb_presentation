@@ -124,9 +124,17 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
             <f:if condition="{hasPrints}">
                 <f:then>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     <div id="{graphTarget}"></div>
-                    <div id="{dashboardTarget}"></div>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     <div id="{tableTarget}"> </div>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     {visualizationCall->f:format.raw()}
                 </f:then>
                 <f:else>

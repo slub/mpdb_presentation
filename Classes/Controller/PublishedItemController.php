@@ -59,6 +59,7 @@ class PublishedItemController extends AbstractController
         $hasPrints = $document->
             get('published_subitems')->
             pluck('prints_by_date')->
+            flatten(1)->
             count();
 
         $visualizationCall = $this->getJsCall($document, $this->publishers, $publishedItem->getMvdbId());
