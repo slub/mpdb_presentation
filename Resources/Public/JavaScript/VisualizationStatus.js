@@ -28,8 +28,14 @@ let tx_publisherdb_visualizationStatus = {
     _publishers: [],
     singleItem: false,
     singleYear: false,
+    singlePrint: false,
     _years: [],
     _subitemIds: [],
+
+    sorting: {
+        by: 'year',
+        asc: true
+    },
 
     set subitemIds (subitemIds) {
         this._subitemIds = subitemIds;
@@ -92,18 +98,6 @@ let tx_publisherdb_visualizationStatus = {
         return this._publishers;
     },
 
-    /*
-    set granularity (granularity) {
-        this._granularity = granularity;
-        this.updateView();
-    },
-
-    set cumulativity (cumulativity) {
-        this._cumulativity = cumulativity;
-        this.updateView();
-    },
-    */
-
     set excludedYears (excludedYears) {
         this._excludedYears = excludedYears;
         this.updateView();
@@ -122,6 +116,38 @@ let tx_publisherdb_visualizationStatus = {
     set data (data) {
         this._isPublishedItem = data.published_subitems ? true : false;
         this._data = data;
+
+        const publishedSubitems = this._data.published_subitems ??
+            this._data.published_items.flatMap(({id, published_subitems}) => published_subitems);
+        if (
+            publishedSubitems.length == 1 && 
+            publishedSubitems[0].prints_per_year.length == 1
+        ) {
+            this.singlePrint = true;
+            this._config.granularity = tx_publisherdb_granularity.BY_DATE;
+        }
+
+        const suborder = this._isPublishedItem ? data.published_subitems :
+            data.published_items
+                .map(published_item => published_item.published_subitems)
+                .flat();
+        const dates = suborder.filter(published_subitem => published_subitem.prints_by_date)
+            .map(published_subitem => published_subitem.prints_by_date)
+            .flat()
+            .map(print => print.date);
+        const uniqueDates = [ ... new Set(dates) ];
+
+        this.printsByDates = uniqueDates.map(date => ({ 
+            date: date, items:
+                suborder.map( subitem =>
+                    subitem.prints_by_date?.filter(print => print.date== date).length > 0 ?
+                    subitem.prints_by_date.filter(print => print.date == date)[0]['quantity'] : 0
+                )
+            })
+        ).sort( (printA, printB) =>
+            printA.date < printB.date ? -1 : 1
+        );
+
         this.updateView();
     },
 
@@ -201,6 +227,8 @@ let tx_publisherdb_visualizationStatus = {
     },
 
     updateData() {
+        // unification function
+        const unify = date => d3.isoParse(`${date}`).getYear() + 1900;
         // retrieve published subitems
         const publishedSubitems = this.isPublishedItem ? this.data.published_subitems :
             this.data.published_items.map(d => d.published_subitems).flat();
@@ -215,10 +243,10 @@ let tx_publisherdb_visualizationStatus = {
         // retrieve per year data including totals for table body
         const years = publishedSubitems.map(subitem => {
                 const targetData = subitem[this.targetData] ?? [];
-                return targetData.map(print => print.date);
+                return targetData.map(print => unify(print.date));
             })
             .flat();
-        this.years = d3.range(d3.min(years), d3.max(years))
+        this.years = d3.range(+d3.min(years), +d3.max(years) + 1)
             .filter(year => !this.excludedYears.includes(year));
 
         const yearData = this.years.map(year => ({
@@ -228,7 +256,7 @@ let tx_publisherdb_visualizationStatus = {
                     .filter(item => currentPublisherRegex ? currentPublisherRegex.test(item.id) : true)
                     .map(prints => {
                         const targetData = prints[this.targetData] ?? [];
-                        const targetPrint = targetData.filter(print => print.date == year);
+                        const targetPrint = targetData.filter(print => unify(print.date) == year);
                         return {
                             id: prints.id,
                             quantity: targetPrint.length > 0 ? targetPrint[0].quantity : 0
@@ -237,6 +265,21 @@ let tx_publisherdb_visualizationStatus = {
             }))
             .sort(this.sort)
             .map(item => ({ year: item.year, items: item.items.map(i => i.quantity) }));
+
+        if (this.targetData == 'prints_per_year_cumulative') {
+            for(let i = 0; i < yearData.length; i++) {
+                for (let j = 0; j < yearData[i].items.length; j++) {
+                    if (yearData[i].items[j] == 0 && i > 0) {
+                        let runner = i - 1;
+                        while (runner > 0 && yearData[runner].items[j] == 0) {
+                            runner--;
+                        }
+                        yearData[i].items[j] = yearData[runner].items[j];
+                    }
+                }
+            }
+        }
+
         this.summedYearData = yearData.map(({year, items}) => ({
             year, items,
             total: items.reduce((a, b) => +a + b)
@@ -257,5 +300,30 @@ let tx_publisherdb_visualizationStatus = {
 
     registerView: function (view) {
         this._views.push(view);
+    },
+
+    sort(a, b) {
+        if (tx_publisherdb_visualizationStatus.sorting.by == 'year') {
+            return tx_publisherdb_visualizationStatus.sorting.asc ?
+                a.year - b.year : b.year - a.year;
+        } else if (tx_publisherdb_visualizationStatus.sorting.by == 'total') {
+            const totalA = a.items.map(item => item.quantity).reduce((c, d) => c + d);
+            const totalB = b.items.map(item => item.quantity).reduce((c, d) => c + d);
+            const quantityDiff = tx_publisherdb_visualizationStatus.sorting.asc ?
+                totalA - totalB : totalB - totalA;
+            if (quantityDiff) {
+                return quantityDiff;
+            }
+            return a.year - b.year;
+        } else {
+            const quantityA = a.items.filter(item => item.id == tx_publisherdb_visualizationStatus.sorting.by)[0]['quantity'];
+            const quantityB = b.items.filter(item => item.id == tx_publisherdb_visualizationStatus.sorting.by)[0]['quantity'];
+            const quantityDiff = tx_publisherdb_visualizationStatus.sorting.asc ?
+                quantityA - quantityB : quantityB - quantityA;
+            if (quantityDiff) {
+                return quantityDiff;
+            }
+            return a.year - b.year;
+        }
     }
 }

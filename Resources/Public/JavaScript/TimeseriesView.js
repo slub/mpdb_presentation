@@ -13,6 +13,8 @@ class TimeseriesView {
         this.data = config.data;
         this.margin = config.margin;
         this.isMain = config.isMain;
+        this.title = config.title;
+        this.type = config.type;
         this.init();
     }
 
@@ -29,6 +31,8 @@ class TimeseriesView {
     }
 
     render() {
+        this.target.append('text')
+            .text(this.title);
         const qScale = this.qScale.range([this._height, 0]);
         const qAxis = d3.axisRight()
             .scale(this.qScale)
@@ -43,22 +47,32 @@ class TimeseriesView {
             .y1(d => this.qScale(d.quantity))
             .curve(d3.curveBumpX);
 
-        this.target.append('path')
-            .attr('d', area(this.data))
-            .attr('fill', 'hsla(45,100%,80%,100%)');
+        const bandScale = d3.scaleBand()
+            .range([0, this.width])
+            .domain(this.data.map(d => d.year))
+            .align(.5)
+            .paddingOuter(.1)
+            .paddingInner(.2);
 
         this.target.append('g')
             .attr('transform', `translate(${this.width},0)`)
             .call(qAxis);
 
-        /*
-        this.target.selectAll('circle')
-            .data(this.data)
-            .join('circle')
-                .attr('cx', d => this.tScale(+d.year))
-                .attr('cy', d => this.qScale(d.quantity))
-                .attr('fill', 'black')
-                .attr('r', d => d.quantity > 0 ? 2 : 0);
-*/
+        if (this.type == 'area') {
+            this.target.append('path')
+                .attr('d', area(this.data))
+                .attr('fill', 'hsla(45,100%,80%,100%)');
+
+        } else {
+            this.target.selectAll('rect')
+                .data(this.data)
+                .join('rect')
+                    .attr('y', d => this.qScale(d.quantity))
+                    .attr('x', d => bandScale(+d.year))
+                    .attr('width', d => bandScale.bandwidth())
+                    .attr('height', d => this._height - this.qScale(d.quantity))
+                    .attr('fill', 'hsl(45,100%,80%)');
+        }
+
     }
 }

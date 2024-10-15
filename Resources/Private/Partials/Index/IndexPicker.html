@@ -3,16 +3,27 @@
     <ul class="index-picker">
         <f:for each="{indices}" as="index" key="key">
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:key)}</f:variable>
-            <li>
-                <f:link.action action="search" arguments="{config:searchconfig}">
-                    {index.translation}
-                </f:link.action>
-            </li>
+            <f:if condition="{key}=={config.index}">
+                <f:then>
+                    <li class="active">
+                        <f:link.action action="search" arguments="{config:searchconfig}">
+                            <f:translate key="mpdbresearch.{index.translation}" />
+                        </f:link.action>
+                    </li>
+                </f:then>
+                <f:else>
+                    <li>
+                        <f:link.action action="search" arguments="{config:searchconfig}">
+                            <f:translate key="mpdbresearch.{index.translation}" />
+                        </f:link.action>
+                    </li>
+                </f:else>
+            </f:if>
         </f:for>
         <li>
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'index',value:'')}</f:variable>
             <f:link.action action="search" arguments="{config:searchconfig}">
-                🗙
+                X
             </f:link.action>
         </li>
     </ul>

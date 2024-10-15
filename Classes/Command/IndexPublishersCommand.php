@@ -1,6 +1,6 @@
 <?php
 
-namespace SLUB\MpdbPresentation\Command;
+namespace Slub\MpdbPresentation\Command;
 
 use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Collection;
@@ -78,13 +78,12 @@ class IndexPublishersCommand extends Command
             )->
             from(self::TABLE_NAME);
 
-        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])) {
+        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])->asBool()) {
             $this->client->indices()->delete(['index' => $prefix . self::INDEX_NAME]);
         }
 
         Collection::wrap($qb->execute()->fetchAll())->
             filter(function ($publisher) { return $this->isPublic($publisher); })->
-            //pluck('uid', self::NAME_COLNAME, self::SHORTHAND_COLNAME)//->
             each(function ($publisher) { $this->indexPublisher($publisher); });
 
         return 0;

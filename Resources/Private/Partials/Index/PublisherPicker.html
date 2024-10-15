@@ -3,11 +3,11 @@
     <ul class="publisher-picker">
         <f:for each="{publishers}" as="publisher">
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'publisher',value:publisher.shorthand)}</f:variable>
-            <f:if condition='{publisher}==config.currentPublisher}' >
+            <f:if condition='{publisher.shorthand}=={config.publisher}' >
                 <f:then>
-                    <li class="active"> 
+                    <li class="active">
                         <f:link.action action="list" arguments="{config:searchconfig}">
-                            {publisher.name}
+                            {publisher.shorthand}
                         </f:link.action>
                     </li>
                 </f:then>
@@ -23,7 +23,7 @@
         <li>
             <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchconfig,key:'publisher',value:'')}</f:variable>
             <f:link.action action="search" arguments="{config:searchconfig}">
-                🗙
+                X
             </f:link.action>
         </li>
     </ul>

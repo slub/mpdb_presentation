@@ -6,28 +6,10 @@ use \Slub\MpdbPresentation\Controller\WorkController;
 use \Slub\MpdbPresentation\Controller\PublishedItemController;
 use \Slub\MpdbPresentation\Controller\InstrumentController;
 use \Slub\MpdbPresentation\Controller\FormController;
-use \Slub\MpdbPresentation\Services\ElasticSearchService;
+use \Slub\MpdbPresentation\Controller\WelcomeController;
 use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 defined('TYPO3_MODE') || die('Access denied.');
-
-ExtensionManagementUtility::addService(
-    'MpdbPresentation',
-    'search',
-    'tx_mpdbpresentation_elasticsearch',
-    [
-        'title' => 'Elasticsearch Service',
-        'description' => 'Provides the frontend with a connection to elasticsearch',
-        'subtype' => '',
-        'available' => true,
-        'priority' => 50,
-        'quality' => 50,
-        'os' => '',
-        'exec' => '',
-        'className' => ElasticSearchService::class,
-    ]
-);
-
 
 call_user_func(
     function()
@@ -35,9 +17,19 @@ call_user_func(
 
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
             'MpdbPresentation',
-            'Fepublisherapi',
+            'Mpdbpublisherapi',
             [
-                \SLUB\MpdbPresentation\Controller\ApiController::class => 'api'
+                \Slub\MpdbPresentation\Controller\ApiController::class => 'api'
+            ],
+            // non-cacheable actions
+			[ ]
+        );
+
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'MpdbPresentation',
+            'Mpdbwelcome',
+            [
+                WelcomeController::class => 'welcome'
             ],
             // non-cacheable actions
 			[ ]
@@ -73,18 +65,57 @@ call_user_func(
                                 list_type = tx_mpdbpresentation_mpdbresearch
                             }
                         }
+                        mpdbpresentation_mpdbwelcome {
+                            iconIdentifier = mpdb_wel_icon
+                            title = LLL:EXT:mpdb_presentation/Resources/Private/Language/locallang.xlf:welcome_title
+                            description = LLL:EXT:mpdb_presentation/Resources/Private/Language/locallang.xlf:welcome_description
+                            tt_content_defValues {
+                                CType = list
+                                list_type = tx_mpdbpresentation_mpdbwelcome
+                            }
+                        }
                     }
                     show = *
                 }
            }'
         );
-		$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
 		
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-work',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_work.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-person',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_person.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-item',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_item.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-gnd',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_gnd.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-search',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_icon_search.svg']
+        );
         $iconRegistry->registerIcon(
             'mpdb_presentation-plugin-fepublisherdb',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/user_plugin_fepublisherdb.svg']
         );
-		
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-plugin-fewelcome',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/user_plugin_welcome.svg']
+        );
     }
 );

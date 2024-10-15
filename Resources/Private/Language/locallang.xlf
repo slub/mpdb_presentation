@@ -1,23 +1,116 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="EXT:publisher_db/Resources/Private/Language/locallang" date="2022-12-19T13:20:31Z" product-name="publisher_db">
-		<header/>
-		<body>
-			<trans-unit id="start_title" resname="tx_publisherdb_domain_model_publishermikroitem">
-				<source>Musikverlagsdatenbank Einstieg</source>
-			</trans-unit>
-			<trans-unit id="start_description" resname="tx_publisherdb_domain_model_publishermikroitem">
-				<source>Das Rechercheplugin der Musikverlagsdatenbank.</source>
-			</trans-unit>
-            <trans-unit id="person">
-                <source>person</source>
+    <file source-language="en" datatype="plaintext" original="EXT:publisher_db/Resources/Private/Language/locallang" date="2022-12-19T13:20:31Z" product-name="publisher_db">
+        <header/>
+        <body>
+            <trans-unit id="mpdbresearch.nextPage" resname="mpdbresearch.nextPage">
+                <source>next page</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.previousPage" resname="mpdbresearch.previousPage">
+                <source>previous page</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.to" resname="mpdbresearch.to">
+                <source>to</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.of" resname="mpdbresearch.of">
+                <source>of</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.resultType" resname="mpdbresearch.resultType">
+                <source>result type</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.publisher" resname="mpdbresearch.publisher">
+                <source>publisher</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.page" resname="mpdbresearch.page">
+                <source>page</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.noResults" resname="mpdbresearch.noResults">
+                <source>no results found</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.search" resname="mpdbresearch.search">
+                <source>Search</source>
+                </trans-unit>
+            <trans-unit id="start_title" resname="start_title">
+                <source>Music Publisher Database Entry</source>
+                </trans-unit>
+            <trans-unit id="start_description" resname="start_description">
+                <source>The research plugin of the Music Publisher Database.</source>
+                </trans-unit>
+            <trans-unit id="welcome_title" resname="welcome_title">
+                <source>Music Publisher Database Welcome</source>
+                </trans-unit>
+            <trans-unit id="welcome_description" resname="welcome_description">
+                <source>The welcome plugin of the Music Publisher Database.</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.person">
+                <source>Person</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.work">
+                <source>Work</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.publishedItem">
+                <source>Published Item</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.gndDisclaimer">
+                <source>These data are retrieved from the Integrated Authority File (Gemeinsame Normdatei).</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.lifeData">
+                <source>Life data</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.unknown">
+                <source>unknown</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.worksBy">
+                <source>Works by %s in the Music Publisher Database</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.publishedBy">
+                <source>published by %s</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.noWorksFound">
+                <source>No works by %s have been found.</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.workNotPrinted">
+                <source>There are no prints of this work recorded in the database.</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.supplementingTitleInfo">
+                <source>supplementary title information</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.printedIn">
+                <source>printed in</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.partialWorks">
+                <source>partial works</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.for">
+                <source>for</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.noWorkData">
+                <source>No work data could be found for this published item.</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.economicData">
+                <source>Economic data</source>
             </trans-unit>
-            <trans-unit id="work">
-                <source>work</source>
+            <trans-unit id="mpdbresearch.noEconomicData">
+                <source>No economic data</source>
             </trans-unit>
-            <trans-unit id="published_item">
-                <source>published item</source>
+            <trans-unit id="mpdbresearch.noEconomicDataParagraph">
+                <source>No economic data could be retrieved for several published items.</source>
             </trans-unit>
-		</body>
-	</file>
+            <trans-unit id="mpdbresearch.containedWork">
+                <source>contained work</source>
+                </trans-unit>
+            <trans-unit id="mpdbresearch.containedWorks">
+                <source>contained works</source>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.editedWork">
+                <source>edited work</source>
+            </trans-unit>
+            <trans-unit id="mpdbresearch.typeTooltip">
+                <source>The type of the published item indicates, whether it is a simple work print, a collection print, a version or something else.</source>
+            </trans-unit>
+            <trans-unit id="and">
+                <source>and</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>
