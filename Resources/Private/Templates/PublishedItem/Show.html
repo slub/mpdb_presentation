@@ -183,7 +183,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
         </div>
         <div class="graph-container">
             <p> {publishedItem.publicComment} </p>
-            <f:if condition="{publisherActions.0}">
+            <f:if condition="{hasPrints}">
                 <f:then>
                     <div class="{dashboardTarget}"></div>
                     <div id="{graphTarget}"></div>

@@ -117,5 +117,15 @@ call_user_func(
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/user_plugin_welcome.svg']
         );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-x',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/x.svg']
+        );
+        $iconRegistry->registerIcon(
+            'mpdb_presentation-xinv',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:mpdb_presentation/Resources/Public/Icons/x-inv.svg']
+        );
     }
 );

@@ -165,6 +165,59 @@
                 </div>
             </div>
             <div class="graph-container">
+                <f:if condition="{subWorks}">
+                    <h3>
+                        <f:translate key="mpdbresearch.partialWorks" />
+                    </h3>
+                    <ul>
+                        <f:for each="{subWorks}" as="subWork">
+                            <li> 
+                                <span class="title"> {subWork.subWork.fullTitle} </span>
+                                <f:if condition="{subWork.subWork.opusNo}">
+                                    <small> op. {subWork.subWork.opusNo} </small>
+                                </f:if>
+                                <f:if condition="{subWork.subWork.indexNo}">
+                                    <small> {subWork.subWork.indexNo} </small>
+                                </f:if>
+                                <f:link.external uri="https://d-nb.info/{work.gndId}" target="_blank">
+                                    ({subWork.subWork.gndId})
+                                </f:link.external>
+                                <f:if condition="{subWork.makros}">
+                                    <f:translate key="mpdbresearch.printedIn" />
+                                    <f:for each="{subWork.makros}" as="makro">
+                                        <f:link.action action="show" controller="PublisherMakroItem" arguments="{publisherMakroItem:makro}">
+                                            {makro.mvdbId}: {makro.title}
+                                        </f:link.action>
+                                    </f:for>
+                                </f:if>
+                            </li>
+                        </f:for>
+                    </ul>
+                </f:if>
+
+                <f:if condition="{work.published_items}">
+                    <f:then>
+                        <h3>
+                            <f:translate key="mpdbresearch.printedIn" />
+                        </h3>
+
+                        <ul class="printed-in">
+                            <f:for each="{work.published_items}" as="item">
+                                <li>
+                                    <f:link.action action="show" controller="PublishedItem" arguments="{publishedItem:item.uid}">
+                                        {item.mvdb_id}: {item.title}
+                                    </f:link.action>
+                                </li>
+                            </f:for >
+                        </ul>
+                    </f:then>
+                    <f:else>
+                        <em>
+                            <f:translate key="mpdbresearch.workNotPrinted" />
+                        </em>
+                    </f:else>
+                </f:if>
+
                 <f:if condition="{hasPrints}">
                     <f:then>
                         <f:if condition="{hasPrints}>1">
@@ -191,60 +244,7 @@
                 </f:if>
             </div>
         </div>
-
-        <f:if condition="{subWorks}">
-            <h3>
-                <f:translate key="mpdbresearch.partialWorks" />
-            </h3>
-            <ul>
-                <f:for each="{subWorks}" as="subWork">
-                    <li> 
-                        <span class="title"> {subWork.subWork.fullTitle} </span>
-                        <f:if condition="{subWork.subWork.opusNo}">
-                            <small> op. {subWork.subWork.opusNo} </small>
-                        </f:if>
-                        <f:if condition="{subWork.subWork.indexNo}">
-                            <small> {subWork.subWork.indexNo} </small>
-                        </f:if>
-                        <f:link.external uri="https://d-nb.info/{work.gndId}" target="_blank">
-                            ({subWork.subWork.gndId})
-                        </f:link.external>
-                        <f:if condition="{subWork.makros}">
-                            <f:translate key="mpdbresearch.printedIn" />
-                            <f:for each="{subWork.makros}" as="makro">
-                                <f:link.action action="show" controller="PublisherMakroItem" arguments="{publisherMakroItem:makro}">
-                                    {makro.mvdbId}: {makro.title}
-                                </f:link.action>
-                            </f:for>
-                        </f:if>
-                    </li>
-                </f:for>
-            </ul>
-        </f:if>
-
-        <f:if condition="{work.published_items}">
-            <f:then>
-                <h3>
-                    <f:translate key="mpdbresearch.printedIn" />
-                </h3>
-
-                <ul class="printed-in">
-                    <f:for each="{work.published_items}" as="item">
-                        <li>
-                            <f:link.action action="show" controller="PublishedItem" arguments="{publishedItem:item.uid}">
-                                {item.mvdb_id}: {item.title}
-                            </f:link.action>
-                        </li>
-                    </f:for >
-                </ul>
-            </f:then>
-            <f:else>
-                <em>
-                    <f:translate key="mpdbresearch.workNotPrinted" />
-                </em>
-            </f:else>
-        </f:if>
-    </f:section>
+</f:section>
 
     <f:section name="wrap"/>
     <f:section name="sidebar"/>

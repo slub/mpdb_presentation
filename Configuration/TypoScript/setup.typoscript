@@ -94,8 +94,9 @@ page {
         d3 = EXT:guv_sitepackage/Resources/Public/JavaScript/Dist/d3.min.js
     }
     includeJSFooter {
-		research = EXT:guv_sitepackage/Resources/Public/JavaScript/Dist/research.js
-		lastVisited = EXT:mpdb_presentation/Resources/Public/JavaScript/LastVisitedFe.js
+		translate = EXT:mpdb_presentation/Resources/Public/JavaScript/Translate.js
+		#research = EXT:guv_sitepackage/Resources/Public/JavaScript/Dist/research.js
+		#lastVisited = EXT:mpdb_presentation/Resources/Public/JavaScript/LastVisitedFe.js
 		visualizationController = EXT:mpdb_presentation/Resources/Public/JavaScript/VisualizationController.js
 		tableController = EXT:mpdb_presentation/Resources/Public/JavaScript/TableController.js
 		dashboardController = EXT:mpdb_presentation/Resources/Public/JavaScript/DashboardController.js
