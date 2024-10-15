@@ -1,6 +1,7 @@
 const tx_publisherdb_tableClass = 'data-table';
 const tx_publisherdb_tableSort = 'datatable-sort';
 const tx_publisherdb_tableYear = 'datatable-year';
+const tx_publisherdb_tableTranslation = 'datatable-translation';
 const tx_publisherdb_tableItem = 'datatable-item';
 const tx_publisherdb_tableRow = 'datatable-row';
 const tx_publisherdb_tableData = 'datatable-data';
@@ -45,8 +46,25 @@ const tx_publisherdb_tableController = {
             .attr('class', tx_publisherdb_tableClass);
 
         const tableHead = table.append('thead');
-        const headRow = tableHead.append('tr');
 
+        const translationHeadRow = tableHead.append('tr');
+        translationHeadRow.append('th');
+        translationHeadRow.selectAll(`th.${tx_publisherdb_tableTranslation}`)
+            .data(tx_publisherdb_visualizationStatus.subitemIds)
+            .join('th')
+            .attr('scope', 'col')
+            .attr('class', tx_publisherdb_tableTranslation)
+            .attr('id', d => d)
+            .attr('class', 'text-right')
+            .html(d => tx_mpdbpresentation_translate(d));
+        if (
+            !tx_publisherdb_visualizationStatus.singleItem &&
+            tx_publisherdb_visualizationStatus.targetData != 'prints_by_date'
+        ) {
+            translationHeadRow.append('th');
+        }
+
+        const headRow = tableHead.append('tr');
         const yearHead = headRow.append('th');
         yearHead
             .attr('scope', 'col')

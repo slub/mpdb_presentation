@@ -14,12 +14,13 @@ class TimeseriesView {
         this.margin = config.margin;
         this.isMain = config.isMain;
         this.title = config.title;
+        this.subtitle = config.subtitle;
         this.type = config.type;
         this.init();
     }
 
     get height() {
-        return this._height + this.margin;
+        return this._height + 2 * this.margin;
     }
 
     init() {
@@ -32,7 +33,12 @@ class TimeseriesView {
 
     render() {
         this.target.append('text')
-            .text(this.title);
+            .text(this.title)
+            .attr('style', 'font-weight: bold')
+            .attr('transform', 'translate(0,-25)');
+        this.target.append('text')
+            .text(this.subtitle)
+            .attr('transform', 'translate(0,-5)');
         const qScale = this.qScale.range([this._height, 0]);
         const qAxis = d3.axisRight()
             .scale(this.qScale)

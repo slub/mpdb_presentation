@@ -61,6 +61,7 @@ class WorkController extends AbstractController
             pluck('published_subitems')->
             flatten(1)->
             pluck('prints_by_date')->
+            flatten(1)->
             filter()->
             count();
         $publishedItems = $this->publishedItemRepository->findByContainedWorks($work->getUid());
