@@ -95,12 +95,46 @@ Otherwise your changes will be overwritten the next time you save the extension 
                 </p>
             </div>
         </div>
+
         <div class="graph-container">
+            <h3>
+                <f:translate key="mpdbresearch.worksBy" arguments="{0:person.name}" />
+            </h3>
+            <f:if condition="{person.works}">
+                <f:then>
+                    <ul>
+                        <f:for each="{person.works}" as="work">
+                            <li>
+                                <f:link.action action="show" arguments="{work:work.uid}" controller="Work">
+                                    {work.full_title}<f:if condition="{work.opus_no}">, op. {work.opus_no}</f:if>
+                                </f:link.action>
+                                <small>
+                                    <f:translate key="mpdbresearch.publishedBy" arguments="{0:work.publishers}" />
+                                </small>
+                            </li>
+                        </f:for >
+                    </ul>
+                </f:then>
+                <f:else>
+                    <em> 
+                        <f:translate key="mpdbresearch.noWorksFound" arguments="{0:person.name}" />
+                    </em>
+                </f:else>
+            </f:if>
+
             <f:if condition="{hasPrints}">
                 <f:then>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     <div id="{graphTarget}"></div>
-                    <div id="{dashboardTarget}"></div>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     <div id="{tableTarget}"> </div>
+                    <f:if condition="{hasPrints}>1">
+                        <div class="{dashboardTarget}"></div>
+                    </f:if>
                     {visualizationCall->f:format.raw()}
                 </f:then>
                 <f:else>
@@ -116,31 +150,6 @@ Otherwise your changes will be overwritten the next time you save the extension 
     </div>
 
     <f:format.htmlentitiesDecode>{personGraph}</f:format.htmlentitiesDecode>
-
-    <h3>
-        <f:translate key="mpdbresearch.worksBy" arguments="{0:person.name}" />
-    </h3>
-    <f:if condition="{person.works}">
-        <f:then>
-            <ul>
-                <f:for each="{person.works}" as="work">
-                    <li>
-                        <f:link.action action="show" arguments="{work:work.uid}" controller="Work">
-                            {work.full_title}<f:if condition="{work.opus_no}">, op. {work.opus_no}</f:if>
-                        </f:link.action>
-                        <small>
-                            <f:translate key="mpdbresearch.publishedBy" arguments="{0:work.publishers}" />
-                        </small>
-                    </li>
-                </f:for >
-            </ul>
-        </f:then>
-        <f:else>
-            <em> 
-                <f:translate key="mpdbresearch.noWorksFound" arguments="{0:person.name}" />
-            </em>
-        </f:else>
-    </f:if>
 
 </f:section>
 

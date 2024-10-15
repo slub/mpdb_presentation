@@ -50,27 +50,23 @@ class PublishedItemController extends AbstractController
                 ( $a->getDateOfAction() == $b->getDateOfAction() ? 0 : 1 );
         };
         $publisherMikroItems = $publishedItem->getPublishedSubitems()->toArray();
-        $publisherActions = [];
-        // use collection
-        foreach ($publisherMikroItems as $publisherMikroItem) {
-            $publisherActions = array_merge(
-            $publisherActions, 
-            $this->publisherActionRepository->findByPublishedsubitem($publisherMikroItem)->toArray()
-            );
-        }
-        usort($publisherActions, $sortByDate);
 
         $document = $this->searchService->
             reset()->
             setIndex(self::TABLE_INDEX_NAME)->
             setId($publishedItem->getMvdbId())->
             search();
+        $hasPrints = $document->
+            get('published_subitems')->
+            pluck('prints_by_date')->
+            flatten(1)->
+            count();
 
         $visualizationCall = $this->getJsCall($document, $this->publishers, $publishedItem->getMvdbId());
         $publishers = $this->publisherRepository->findAll();
         $this->view->assign('publishedItem', $publishedItem);
         $this->view->assign('publisherMikroItems', $publisherMikroItems);
-        $this->view->assign('publisherActions', $publisherActions);
+        $this->view->assign('hasPrints', $hasPrints);
         $this->view->assign('visualizationCall', $visualizationCall);
         $this->view->assign('tableTarget', self::TABLE_TARGET);
         $this->view->assign('graphTarget', self::GRAPH_TARGET);

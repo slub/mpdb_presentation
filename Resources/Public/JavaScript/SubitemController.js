@@ -32,6 +32,7 @@ const tx_publisherdb_subitemController = {
                 qScale: qScale,
                 data: data,
                 title: this.titles[i],
+                subtitle: tx_mpdbpresentation_translate(this.titles[i]),
                 margin: this.margin,
                 isMain: false,
                 type: this.type

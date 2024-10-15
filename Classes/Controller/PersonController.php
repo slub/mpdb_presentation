@@ -46,6 +46,7 @@ class PersonController extends AbstractController
             pluck('published_subitems')->
             flatten(1)->
             pluck('prints_by_date')->
+            flatten(1)->
             filter()->
             count();
 
