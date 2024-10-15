@@ -10,5 +10,9 @@ return [
     'mpdb_res_icon' => [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_res_icon.svg'
+    ],
+    'mpdb_wel_icon' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:mpdb_presentation/Resources/Public/Icons/mpdb_wel_icon.svg'
     ]
 ];

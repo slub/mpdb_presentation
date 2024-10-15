@@ -2,7 +2,7 @@
 
 {namespace mpdbpres=Slub\MpdbPresentation\ViewHelpers}
 
-    <f:form action="search" controller="Index" class="form-inline">
+    <f:form action="search" controller="Index" class="form-inline" pluginName="mpdbresearch" pageUid="{settings.researchPage.pid}">
         <div class="input-group">
             <f:form.textfield name="config[searchTerm]" class="input-group-field" value="{config.searchTerm}" placeholder="{f:translate(key:'mpdbresearch.search')}" id="main-search" />
             <div class="input-group-button">

@@ -53,6 +53,39 @@ plugin.tx_mpdbpresentation_mpdbresearch {
         teamPage {
             pid = {$config.teamPage.pid}
         }
+        guidelinePage {
+            pid = {$config.guidelinePage.pid}
+        }
+        abbrPage {
+            pid = {$config.abbrPage.pid}
+        }
+    }
+}
+
+plugin.tx_mpdbpresentation_mpdbwelcome {
+    view {
+        templateRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Templates/
+        templateRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.templateRootPath}
+        partialRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Partials/
+        partialRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.partialRootPath}
+        layoutRootPaths.0 = EXT:tx_mpdb_presentation/Resources/Private/Layouts/
+        layoutRootPaths.1 = {$plugin.tx_mpdbpresentation_mpdbwelcome.view.layoutRootPath}
+    }
+    persistence {
+        storagePid = {$plugin.tx_mpdbpresentation_mpdbwelcome.persistence.storagePid}
+        #recursive = 1
+    }
+    features {
+        #skipDefaultArguments = 1
+        # if set to 1, the enable fields are ignored in BE context
+        ignoreAllEnableFieldsInBe = 0
+        # Should be on by default, but can be disabled if all action in the plugin are uncached
+        requireCHashArgumentForActionArguments = 1
+    }
+    settings {
+        researchPage {
+            pid = {$config.researchPage.pid}
+        }
     }
 }
 
