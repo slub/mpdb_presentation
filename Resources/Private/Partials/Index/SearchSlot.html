@@ -10,9 +10,11 @@
                     <core:icon identifier="mpdb_presentation-search" size="large"/>
                 </f:form.button>
                 <f:variable name="searchconfig">{mpdbpres:setConfig(config:searchConfig,key:'searchTerm',value:'')}</f:variable>
-                <f:link.action action="search" arguments="{config:searchconfig}" class="button" id="reset-button">
-                    <core:icon identifier="mpdb_presentation-xinv" size="large"/>
-                </f:link.action>
+                <f:if condition="{reset}">
+                    <f:link.action action="search" arguments="{config:searchconfig}" class="button" id="reset-button">
+                        <core:icon identifier="mpdb_presentation-xinv" size="default"/>
+                    </f:link.action>
+                </f:if>
             </div>
         </div>
     </f:form>
