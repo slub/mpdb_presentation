@@ -58,8 +58,8 @@ const tx_publisherdb_dashboardController = {
             publisherList.selectAll(`a.${tx_publisherdb_dashboardPublisher}`)
                 .data(tx_publisherdb_visualizationStatus.publishers)
                 .join('a')
-                .attr('class', `${tx_publisherdb_dashboardPublisher} primary button hollow include-year`)
-                .attr('class', d => d.id)
+                .attr('class', d => `${tx_publisherdb_dashboardPublisher} primary button hollow include-year ${d.id}`)
+                .attr('data', d => d.id)
                 .html(d => d.id)
                 .attr('title', d => d.name);
         }
@@ -153,7 +153,7 @@ const tx_publisherdb_dashboardController = {
         });
 
         $(`a.${tx_publisherdb_dashboardPublisher}`).click ( e => {
-            tx_publisherdb_visualizationStatus.currentPublisher = e.currentTarget.id;
+            tx_publisherdb_visualizationStatus.currentPublisher = e.currentTarget.data.nodeValue;
         });
 
     }
