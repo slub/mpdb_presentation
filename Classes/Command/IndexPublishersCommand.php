@@ -34,6 +34,7 @@ class IndexPublishersCommand extends Command
     const INDEX_NAME = 'publishers';
 
     protected string $prefix;
+    protected Client $client;
 
     /**
      * Pre-Execution configuration
@@ -78,8 +79,8 @@ class IndexPublishersCommand extends Command
             )->
             from(self::TABLE_NAME);
 
-        if ($this->client->indices()->exists(['index' => $prefix . self::INDEX_NAME])->asBool()) {
-            $this->client->indices()->delete(['index' => $prefix . self::INDEX_NAME]);
+        if ($this->client->indices()->exists(['index' => $this->prefix . self::INDEX_NAME])->asBool()) {
+            $this->client->indices()->delete(['index' => $this->prefix . self::INDEX_NAME]);
         }
 
         Collection::wrap($qb->execute()->fetchAll())->
